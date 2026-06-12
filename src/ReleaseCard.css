@@ -1,0 +1,6 @@
+.release-card {
+  width: 700 !important; 
+  border: "1px solid #ccc" !important; 
+  padding: 16 !important; 
+}
+/* width: 300, border: "1px solid #ccc", padding:  16, fontFamily: "sans-serif"  */

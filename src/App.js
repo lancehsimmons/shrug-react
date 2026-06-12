@@ -12,7 +12,7 @@ function App() {
           ¯\_(ツ)_/¯
         </h1>
       </header>
-      <Releaselist />
+      <Releaselist className="release-list"/>
     </div>
   );
 }

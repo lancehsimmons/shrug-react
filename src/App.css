@@ -28,6 +28,14 @@
   color: #04cc40;
 }
 
+.release-list {
+  margin: 80px 80px 80px 80px;
+  /* margin-top: 80px;
+  margin-bottom: 80px;
+  margin-right: 80px;
+  margin-left: 80px; */
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
