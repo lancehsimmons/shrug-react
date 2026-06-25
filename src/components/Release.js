@@ -1,4 +1,4 @@
-// import '../ReleaseCard.css';
+import '../Releasecard.css';
 
 export default function MusicCard({
   title,
@@ -7,10 +7,10 @@ export default function MusicCard({
   sideB,
 }) {
   return (
-    <div className="styles.card" style={{width: 300, border: "1px solid #ccc", padding:  16, fontFamily: "sans-serif"}}>
+    <div className="release-card" >
       {/* {image && <img src={image} alt={title} style={{ width: "100%", marginBottom: 12 }} />} */}
-      <h2 style={{ margin: "0 0 4px" }}>{title}</h2>
-      <p style={{ margin: "0 0 16px", color: "#555" }}>{artist}</p>
+      <h2 style={{ margin: "0 0 0px", "text-align":'left' }}>{title}</h2>
+      <p className="artist" >{artist}</p>
 
       <p style={{ margin: "0 0 4px", fontWeight: "bold" }}>Side A</p>
       <ul style={{ margin: "0 0 16px", paddingLeft: 20 }}>
@@ -24,3 +24,5 @@ export default function MusicCard({
     </div>
   );
 }
+
+// style={{width: 300, border: "1px solid #ccc", padding:  16, fontFamily: "sans-serif"}}
