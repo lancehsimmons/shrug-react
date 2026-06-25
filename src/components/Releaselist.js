@@ -11,6 +11,7 @@ function ReleaseList() {
           artist={release.artist}
           sideA={release.sideA}
           sideB={release.sideB}
+          samples={release.sampleURL}
         />
       ))}
     </div>

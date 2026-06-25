@@ -5,7 +5,10 @@ export default function MusicCard({
   artist,
   sideA,
   sideB,
+  samples
 }) {
+        console.log('sample urls',{samples});
+      console.log('title',{title});
   return (
     <div className="release-card" >
       {/* {image && <img src={image} alt={title} style={{ width: "100%", marginBottom: 12 }} />} */}
@@ -21,6 +24,16 @@ export default function MusicCard({
       <ul style={{ margin: 0, paddingLeft: 20 }}>
         {sideB.map((track, i) => <li key={i}>{track}</li>)}
       </ul>
+
+      <div>Samples</div>
+      <ul>
+        {samples.map((url, i) =>
+          <li key={i}>
+            <audio src={url} controls >{url}</audio>
+          </li>)}
+      </ul> 
+
+
     </div>
   );
 }
