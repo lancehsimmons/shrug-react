@@ -1,8 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
-import Release from './components/Release.js'
 import Releaselist from './components/Releaselist.js'
-
 
 function App() {
   return (
@@ -11,6 +8,10 @@ function App() {
         <h1>
           ¯\_(ツ)_/¯
         </h1>
+        <div style={{ display: "flex", flexDirection:"column"}}>
+          <p style={{ fontSize: "18px" }} >Shrug is a private press</p>
+          <p style={{ fontSize:"18px"}} >for the Holocene Epoch </p>
+        </div>
       </header>
       <Releaselist className="release-list"/>
     </div>
