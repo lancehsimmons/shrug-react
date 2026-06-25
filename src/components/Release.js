@@ -15,7 +15,10 @@ export default function MusicCard({
       <h2 style={{ margin: "0 0 0px", "text-align":'left' }}>{title}</h2>
       <p className="artist" >{artist}</p>
 
-      <p style={{ margin: "0 0 4px", fontWeight: "bold" }}>Side A</p>
+      <img className="release-image" src={`${process.env.PUBLIC_URL}/images/strct_wtr_1.jpg`} alt="" />
+      <img className="release-image" src={`${process.env.PUBLIC_URL}/images/strct_wtr_2.jpg`} alt="" />
+      <div style={{ marginTop: "16px" }}>
+        <p style={{ margin: "0 0 4px", fontWeight: "bold" }}>Side A</p>
       <ul style={{ margin: "0 0 16px", paddingLeft: 20 }}>
         {sideA.map((track, i) => <li key={i}>{track}</li>)}
       </ul>
@@ -24,8 +27,10 @@ export default function MusicCard({
       <ul style={{ margin: 0, paddingLeft: 20 }}>
         {sideB.map((track, i) => <li key={i}>{track}</li>)}
       </ul>
+      </div>
 
-      <div>Samples</div>
+
+      <p style={{ marginTop: "16px", fontWeight: "bold" }}>Samples</p>
       <ul>
         {samples.map((url, i) =>
           <li key={i}>

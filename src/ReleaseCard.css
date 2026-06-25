@@ -9,3 +9,10 @@
   margin-block-start: 0px;  
   font-size: 18px;
 }
+
+.release-image {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  display: flex
+}
