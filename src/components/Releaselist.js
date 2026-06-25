@@ -9,6 +9,7 @@ function ReleaseList() {
           key={release.id}
           title={release.title}
           artist={release.artist}
+          date={release.date}
           sideA={release.sideA}
           sideB={release.sideB}
           samples={release.sampleURL}

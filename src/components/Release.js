@@ -3,6 +3,7 @@ import '../Releasecard.css';
 export default function MusicCard({
   title,
   artist,
+  date,
   sideA,
   sideB,
   samples
@@ -12,8 +13,12 @@ export default function MusicCard({
   return (
     <div className="release-card" >
       {/* {image && <img src={image} alt={title} style={{ width: "100%", marginBottom: 12 }} />} */}
-      <h2 style={{ margin: "0 0 0px", "text-align":'left' }}>{title}</h2>
-      <p className="artist" >{artist}</p>
+      <h2 style={{ margin: "0 0 0px", "text-align": 'left' }}>{title}</h2>
+      <div style={{display:"flex"}}>
+        <p className="artist" >{artist}</p>
+        <p style={{marginLeft:"12px", textAlign: "left",  
+  fontSize: "18px"}}> {date} </p>
+      </div>
 
       <div style={{margin: "8px 0px"}}>
         <img className="release-image" src={`${process.env.PUBLIC_URL}/images/strct_wtr_1.jpg`} alt="" />
