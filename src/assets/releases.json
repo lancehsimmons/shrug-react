@@ -8,8 +8,8 @@
       "sideA": ["Theory of Disinformation II","Re-Equivalence"],
       "sideB": ["ZnCO₃ + TiO₂ + K₂O"],
       "sampleURL": ["https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/disinfo_thry_samp.wav", "https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/re_equivalence_samp.wav", "https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/ZnCO%E2%82%83%2BTiO%E2%82%82%2BK%E2%82%82O_samp.wav"],
-      "physprice": "15",
-      "fileprice": "6",
+      "physprice": "15.00",
+      "fileprice": "6.00",
       "stock": 12
     },
     {
@@ -20,8 +20,8 @@
       "sideA": ["Theory of Disinformation II","Re-Equivalence"],
       "sideB": ["ZnCO₃ + TiO₂ + K₂O"],
       "sampleURL": ["https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/disinfo_thry_samp.wav", "https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/re_equivalence_samp.wav", "https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/ZnCO%E2%82%83%2BTiO%E2%82%82%2BK%E2%82%82O_samp.wav"],
-      "physprice": "15",
-      "fileprice": "6",
+      "physprice": "15.00",
+      "fileprice": "6.00",
       "stock": 6
     }
   ]

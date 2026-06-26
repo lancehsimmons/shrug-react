@@ -62,6 +62,7 @@ async function getAccessToken() {
 //   res.json(await response.json());
 // });
 app.post("/api/orders", async (req, res) => {
+
   const { releaseId } = req.body;
   const release = releases.find((r) => r.id === releaseId);
 
@@ -74,7 +75,7 @@ app.post("/api/orders", async (req, res) => {
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
     body: JSON.stringify({
       intent: "CAPTURE",
-      purchase_units: [{ amount: { currency_code: "USD", value: release.price } }],
+      purchase_units: [{ amount: { currency_code: "USD", value: release.physprice } }],
     }),
   });
   res.json(await response.json());
@@ -101,6 +102,7 @@ app.post("/api/orders/:orderID/capture", async (req, res) => {
   if (details.status === "COMPLETED") {
     const release = releases.find((r) => r.id === releaseId);
     if (release && release.stock > 0) release.stock -= 1;
+    console.log("Updated release:", release);
   }
 
   res.json(details);

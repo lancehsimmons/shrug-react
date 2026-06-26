@@ -56,7 +56,7 @@ function BuyButton({ price, title, releaseId }) {
           body: JSON.stringify({ releaseId }),
         });
         const order = await res.json();
-        console.log("Order response:", order);
+        // console.log("PayPal full response:", JSON.stringify(order, null, 2));
         return order.id;
       }}
       onApprove={async (data) => {
