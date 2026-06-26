@@ -1,13 +1,14 @@
 .release-card {
   width: 300px; 
   border: 1px solid black; 
-  padding: 16px; 
+  padding: 16px;
+  margin-top: 16px 
 }
 
 .artist {
   text-align: left;
   margin-block-start: 0px;  
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .release-image {

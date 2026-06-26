@@ -1,23 +1,26 @@
 import '../Releasecard.css';
+import BuyButton from "./BuyTapeBtn.js";
 
 export default function MusicCard({
+  id,
   title,
   artist,
   date,
   sideA,
   sideB,
-  samples
+  samples,
+  physprice,
+  stock
 }) {
-        console.log('sample urls',{samples});
-      console.log('track title',{sideA});
+
   return (
     <div className="release-card" >
-      {/* {image && <img src={image} alt={title} style={{ width: "100%", marginBottom: 12 }} />} */}
+
       <h2 style={{ margin: "0 0 0px", "text-align": 'left' }}>{title}</h2>
       <div style={{display:"flex"}}>
         <p className="artist" >{artist}</p>
         <p style={{marginLeft:"12px", textAlign: "left",  
-  fontSize: "18px"}}> {date} </p>
+        fontSize: "18px"}}> {date} </p>
       </div>
 
       <div style={{margin: "8px 0px"}}>
@@ -42,14 +45,18 @@ export default function MusicCard({
       <ul>
         {samples.map((url, i) =>
           <li key={i}>
-            {/* <p>{sideA.at(i)}</p> */}
             <audio src={url} controls >{url}</audio>
           </li>)}
       </ul> 
-
+      
+      <div style={{ marginTop: "16px" }}>
+        {stock > 0 ? (
+          <BuyButton price={physprice} title={title} releaseId={id} />
+        ) : (
+          <p style={{fontWeight: "bold"}}>SOLD OUT</p>
+        )}
+      </div>
 
     </div>
   );
 }
-
-// style={{width: 300, border: "1px solid #ccc", padding:  16, fontFamily: "sans-serif"}}
