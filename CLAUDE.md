@@ -29,6 +29,12 @@ reusable components fed by data rather than hardcoded per release.
 - When explaining something, show me complete, concrete code rather than
   describing it abstractly first.
 
+  ## To Do
+  - update file purchase flow through paypal. this includes adding filepurchase button and transaction typing (this might change with addition of sqlite server)
+  - Since digital delivery was the next thing on your list and it needs that same server anyway — want to pick that up now? The shape of it would be: on successful capture, if purchaseType === 'digital', generate a short-lived signed/tokenized URL pointing at the R2 file and return it in the capture response (or email it), rather than exposing your permanent R2 dev URL directly.
+  - add file purchase button and paypal flow including file delivery react url or components
+  - add sqlite server to manage stock includig an enpoint for adding new items along with an html form with password gate to make addition easy
+
 ## Note on this file
 This was drafted from a summary of past conversations, not a live look at
 the current repo — so treat the specifics above (file paths, exact

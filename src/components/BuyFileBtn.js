@@ -1,7 +1,7 @@
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useState } from "react";
 
-function BuyButton({ price, title, releaseId }) {
+function BuyFileButton({ price, title, releaseId }) {
   const [purchased, setPurchased] = useState(false);
 
   if (purchased) {
@@ -15,7 +15,7 @@ function BuyButton({ price, title, releaseId }) {
         const res = await fetch("http://localhost:4000/api/orders", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ releaseId, purchase_type: "physical" }),
+          body: JSON.stringify({ releaseId, purchase_type: "digital" }),
         });
         const order = await res.json();
         return order.orderID;
@@ -34,4 +34,4 @@ function BuyButton({ price, title, releaseId }) {
   );
 }
 
-export default BuyButton;
+export default BuyFileButton;
