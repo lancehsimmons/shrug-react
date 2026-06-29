@@ -1,5 +1,6 @@
 import '../Releasecard.css';
 import BuyButton from "./BuyTapeBtn.js";
+import BuyFileButton from "./BuyFileBtn.js";
 
 export default function MusicCard({
   id,
@@ -10,6 +11,8 @@ export default function MusicCard({
   sideB,
   samples,
   physprice,
+  fileprice,
+  downloadUrls,
   stock
 }) {
 
@@ -55,6 +58,10 @@ export default function MusicCard({
         ) : (
           <p style={{fontWeight: "bold"}}>SOLD OUT</p>
         )}
+      </div>
+
+      <div style={{ marginTop: "16px" }}>
+        <BuyFileButton price={fileprice} title={title} releaseId={id} downloadUrls={downloadUrls} />
       </div>
 
     </div>

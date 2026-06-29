@@ -9,6 +9,7 @@ function parseRelease(row) {
     side_a: JSON.parse(row.side_a || '[]'),
     side_b: JSON.parse(row.side_b || '[]'),
     sample_urls: JSON.parse(row.sample_urls || '[]'),
+    download_urls: JSON.parse(row.download_urls || '[]'),
     images: JSON.parse(row.images || '[]'),
   };
 }
