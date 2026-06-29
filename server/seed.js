@@ -15,11 +15,7 @@ const releases = [
       'https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/re_equivalence_samp.wav',
       'https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/ZnCO%E2%82%83%2BTiO%E2%82%82%2BK%E2%82%82O_samp.wav',
     ]),
-    download_urls: JSON.stringify([
-      'https://pub-8199366eb9d340e79b3c5513110d6e99.r2.dev/Disinformation_Theory2.wav',
-      'https://pub-8199366eb9d340e79b3c5513110d6e99.r2.dev/re_equivalence.wav',
-      'https://pub-8199366eb9d340e79b3c5513110d6e99.r2.dev/ZnCO%E2%82%83%20%2B%20TiO%E2%82%82%20%2B%20K%E2%82%82O.wav',
-    ]),
+    download_url: 'https://pub-8199366eb9d340e79b3c5513110d6e99.r2.dev/Structured_Water-Unguent.zip',
     images: JSON.stringify([]),
     physprice: 15.00,
     fileprice: 6.00,
@@ -39,7 +35,7 @@ const releases = [
       'https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/re_equivalence_samp.wav',
       'https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/ZnCO%E2%82%83%2BTiO%E2%82%82%2BK%E2%82%82O_samp.wav',
     ]),
-    download_urls: JSON.stringify([]),
+    download_url: null,
     images: JSON.stringify([]),
     physprice: 15.00,
     fileprice: 6.00,
@@ -48,14 +44,14 @@ const releases = [
 ];
 
 const insert = db.prepare(`
-  INSERT INTO releases (id, title, artist, date, time, side_a, side_b, notes, sample_urls, download_urls, images, physprice, fileprice, stock)
+  INSERT INTO releases (id, title, artist, date, time, side_a, side_b, notes, sample_urls, download_url, images, physprice, fileprice, stock)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `);
 
 for (const r of releases) {
   const existing = db.prepare('SELECT id FROM releases WHERE id = ?').get(r.id);
   if (!existing) {
-    insert.run(r.id, r.title, r.artist, r.date, r.time, r.side_a, r.side_b, r.notes, r.sample_urls, r.download_urls, r.images, r.physprice, r.fileprice, r.stock);
+    insert.run(r.id, r.title, r.artist, r.date, r.time, r.side_a, r.side_b, r.notes, r.sample_urls, r.download_url, r.images, r.physprice, r.fileprice, r.stock);
     console.log(`Seeded: ${r.title}`);
   }
 }

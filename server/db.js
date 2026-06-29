@@ -13,7 +13,7 @@ db.exec(`
     side_b TEXT,
     notes TEXT,
     sample_urls TEXT,
-    download_urls TEXT,
+    download_url TEXT,
     images TEXT,
     physprice REAL NOT NULL,
     fileprice REAL NOT NULL,

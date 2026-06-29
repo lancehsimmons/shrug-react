@@ -13,7 +13,7 @@ function ReleaseList() {
           sideA: r.side_a,
           sideB: r.side_b,
           samples: r.sample_urls,
-          downloadUrls: r.download_urls,
+          downloadUrl: r.download_url,
         })));
       });
   }, []);
@@ -32,7 +32,7 @@ function ReleaseList() {
           samples={release.samples}
           physprice={release.physprice}
           fileprice={release.fileprice}
-          downloadUrls={release.downloadUrls}
+          downloadUrl={release.downloadUrl}
           stock={release.stock}
         />
       ))}

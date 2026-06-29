@@ -30,9 +30,9 @@ shrug-react/
 │   ├── App.js            — PayPalScriptProvider setup with client ID
 │   ├── components/
 │   │   ├── Releaselist.js  — Fetches all releases from API, renders list
-│   │   ├── Release.js      — Individual release card (props: id, title, artist, date, sideA, sideB, samples, physprice, stock)
+│   │   ├── Release.js      — Individual release card (props: id, title, artist, date, sideA, sideB, samples, physprice, fileprice, downloadUrls, stock)
 │   │   ├── BuyTapeBtn.js   — PayPal button for physical purchase
-│   │   └── BuyFileBtn.js   — PayPal button for digital purchase
+│   │   └── BuyFileBtn.js   — PayPal button for digital purchase; renders download links after successful capture
 │   └── assets/
 │       └── releases.json   — Legacy data file, no longer used for rendering
 └── public/
@@ -41,7 +41,7 @@ shrug-react/
 
 ## Database schema
 
-Two tables: `releases` and `orders` — see `server/db.js` for full schema. JSON array columns (`side_a`, `side_b`, `sample_urls`, `images`) are stored as JSON strings and parsed back into arrays in the API response.
+Two tables: `releases` and `orders` — see `server/db.js` for full schema. JSON array columns (`side_a`, `side_b`, `sample_urls`, `download_urls`, `images`) are stored as JSON strings and parsed back into arrays in the API response.
 
 ## Running the project
 
@@ -79,13 +79,13 @@ ADMIN_KEY=
 - Stock only decrements on a successful capture — never on order creation
 - `UPDATE releases SET stock = stock - 1 WHERE id = ? AND stock > 0` is the only true oversell guard
 - `purchase_type` (`physical` or `digital`) is set by the buy button and encoded into PayPal's `custom_id` field at order creation — the capture route reads it back from there
-- `Releaselist.js` maps snake_case API fields (`side_a`, `side_b`, `sample_urls`) to camelCase props (`sideA`, `sideB`, `samples`) expected by `Release.js`
+- `Releaselist.js` maps snake_case API fields (`side_a`, `side_b`, `sample_urls`, `download_urls`) to camelCase props (`sideA`, `sideB`, `samples`, `downloadUrls`) expected by `Release.js`
 
 ## Before deployment
 
 - Remove "soiled top spin" from `server/seed.js` — only the Unguent "Structured Water" release should be live
 - Switch `PAYPAL_ENV` to `live` and update credentials
-- Digital file delivery (signed R2 URLs) is not yet implemented — `BuyFileBtn.js` captures payment but does not deliver a download link
+- Digital file delivery uses direct R2 URLs stored in `download_urls` — shown as download links after a successful capture. Signed URLs are not yet implemented; links are publicly accessible.
 
 ## Working preferences
 

@@ -1,20 +1,14 @@
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useState } from "react";
 
-function BuyFileButton({ price, title, releaseId, downloadUrls }) {
+function BuyFileButton({ price, title, releaseId, downloadUrl }) {
   const [purchased, setPurchased] = useState(false);
 
   if (purchased) {
     return (
       <div>
         <p style={{color:"red", fontWeight:"bold"}}>Thanks for buying {title}!</p>
-        <ul>
-          {downloadUrls.map((url, i) => (
-            <li key={i}>
-              <a href={url} download>Download {i + 1}</a>
-            </li>
-          ))}
-        </ul>
+        {downloadUrl && <a href={downloadUrl} download>Download {title}</a>}
       </div>
     );
   }

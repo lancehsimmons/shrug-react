@@ -12,7 +12,7 @@ export default function MusicCard({
   samples,
   physprice,
   fileprice,
-  downloadUrls,
+  downloadUrl,
   stock
 }) {
 
@@ -61,7 +61,7 @@ export default function MusicCard({
       </div>
 
       <div style={{ marginTop: "16px" }}>
-        <BuyFileButton price={fileprice} title={title} releaseId={id} downloadUrls={downloadUrls} />
+        <BuyFileButton price={fileprice} title={title} releaseId={id} downloadUrl={downloadUrl} />
       </div>
 
     </div>
