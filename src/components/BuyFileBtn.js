@@ -15,7 +15,8 @@ function BuyFileButton({ price, title, releaseId, downloadUrl }) {
 
   return (
     <PayPalButtons
-      style={{ layout: "horizontal", height: 35 }}
+      fundingSource="paypal"
+      style={{ layout: "horizontal", height: 35, label: "buynow" }}
       createOrder={async () => {
         const res = await fetch("http://localhost:4000/api/orders", {
           method: "POST",

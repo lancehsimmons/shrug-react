@@ -53,6 +53,7 @@ export default function MusicCard({
       </ul> 
       
       <div style={{ marginTop: "16px" }}>
+        <p style={{ margin: "0 0 8px", fontWeight: "bold" }}>Physical Media</p>
         {stock > 0 ? (
           <BuyButton price={physprice} title={title} releaseId={id} />
         ) : (
@@ -61,6 +62,7 @@ export default function MusicCard({
       </div>
 
       <div style={{ marginTop: "16px" }}>
+        <p style={{ margin: "0 0 8px", fontWeight: "bold" }}>Download</p>
         <BuyFileButton price={fileprice} title={title} releaseId={id} downloadUrl={downloadUrl} />
       </div>
 
