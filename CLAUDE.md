@@ -1,43 +1,94 @@
-# Shrug React — Music Release Card App
+# Shrug React — Music Release Store
 
 ## What this project is
-A React application (lives under `src/shrug-react/`) for displaying music
-release cards — think album/single artwork plus metadata, rendered as
-reusable components fed by data rather than hardcoded per release.
 
-## Where things stand
-- **Component design**: Went through a couple of design passes. Started
-  with a more elaborate vinyl-record aesthetic for the release card, then
-  pulled back to a clean, minimal, prop-driven component. Favor the
-  simpler version going forward unless there's a specific reason to add
-  visual complexity back in.
-- **Data integration**: Release data is being pulled in from JSON rather
-  than hardcoded into components.
-- **Styling**: Using CSS Modules (scoped per-component stylesheets), not
-  global CSS or a CSS-in-JS library.
-- **Known rough edges hit so far**: `.map()` errors when the JSON shape
-  didn't match what the component expected, and module-not-found errors
-  from import paths — worth double-checking data shape and import paths
-  first if either resurfaces.
+A React storefront for Unguent music releases. Displays release cards with metadata, track listings, audio samples, and PayPal checkout. Backed by a Node/Express server with a SQLite database.
 
-## How to work with me on this
-- I prefer simple, explicit, incrementally-built solutions. Please don't
-  reach for abstraction, config layers, or "flexible" architecture before
-  it's actually needed.
-- Push back if something feels over-engineered for what the task needs —
-  I'd rather hear that than have it built anyway.
-- When explaining something, show me complete, concrete code rather than
-  describing it abstractly first.
+## Tech stack
 
-  ## To Do
-  - update file purchase flow through paypal. this includes adding filepurchase button and transaction typing (this might change with addition of sqlite server)
-  - Since digital delivery was the next thing on your list and it needs that same server anyway — want to pick that up now? The shape of it would be: on successful capture, if purchaseType === 'digital', generate a short-lived signed/tokenized URL pointing at the R2 file and return it in the capture response (or email it), rather than exposing your permanent R2 dev URL directly.
-  - add file purchase button and paypal flow including file delivery react url or components
-  - add sqlite server to manage stock includig an enpoint for adding new items along with an html form with password gate to make addition easy
+- React 19 (`.js` file extensions, not `.jsx`)
+- Node.js + Express server in `server/`
+- `better-sqlite3` for synchronous SQLite
+- PayPal Orders v2 REST API (sandbox credentials in `server/.env`)
+- `@paypal/react-paypal-js` for the frontend PayPal button components
+- CSS Modules per component
 
-## Note on this file
-This was drafted from a summary of past conversations, not a live look at
-the current repo — so treat the specifics above (file paths, exact
-component names, current JSON shape) as a starting point. Worth a quick
-pass to correct/expand once you're actually looking at the code, and keep
-it updated as the project evolves.
+## Project structure
+
+```
+shrug-react/
+├── server/
+│   ├── index.js          — Express app, mounts routes, starts on port 4000
+│   ├── db.js             — Opens SQLite DB, creates tables on startup
+│   ├── seed.js           — Seeds releases on first run (checks before inserting)
+│   ├── paypal.js         — getAccessToken() and BASE_URL for PayPal API calls
+│   └── routes/
+│       ├── releases.js   — GET /api/releases (public), POST /api/releases (admin)
+│       ├── orders.js     — GET /api/orders (admin), POST /api/orders
+│       └── capture.js    — POST /api/orders/:orderID/capture
+├── src/
+│   ├── App.js            — PayPalScriptProvider setup with client ID
+│   ├── components/
+│   │   ├── Releaselist.js  — Fetches all releases from API, renders list
+│   │   ├── Release.js      — Individual release card (props: id, title, artist, date, sideA, sideB, samples, physprice, stock)
+│   │   ├── BuyTapeBtn.js   — PayPal button for physical purchase
+│   │   └── BuyFileBtn.js   — PayPal button for digital purchase
+│   └── assets/
+│       └── releases.json   — Legacy data file, no longer used for rendering
+└── public/
+    └── images/             — Release artwork
+```
+
+## Database schema
+
+Two tables: `releases` and `orders` — see `server/db.js` for full schema. JSON array columns (`side_a`, `side_b`, `sample_urls`, `images`) are stored as JSON strings and parsed back into arrays in the API response.
+
+## Running the project
+
+```bash
+# Terminal 1 — backend
+cd server && node index.js
+
+# Terminal 2 — frontend
+npm start
+```
+
+Server runs on port 4000. React dev server proxies to it.
+
+## API endpoints
+
+| Method | Path | Auth | Purpose |
+|---|---|---|---|
+| GET | `/api/releases` | public | All releases with parsed JSON columns |
+| POST | `/api/releases` | `x-admin-key` | Add a new release |
+| GET | `/api/orders` | `x-admin-key` | All orders, newest first |
+| POST | `/api/orders` | public | Create a PayPal order |
+| POST | `/api/orders/:orderID/capture` | public | Capture payment, decrement stock |
+
+## Environment variables (`server/.env`)
+
+```
+PAYPAL_CLIENT_ID=
+PAYPAL_CLIENT_SECRET=
+PAYPAL_ENV=sandbox
+ADMIN_KEY=
+```
+
+## Key design decisions
+
+- Stock only decrements on a successful capture — never on order creation
+- `UPDATE releases SET stock = stock - 1 WHERE id = ? AND stock > 0` is the only true oversell guard
+- `purchase_type` (`physical` or `digital`) is set by the buy button and encoded into PayPal's `custom_id` field at order creation — the capture route reads it back from there
+- `Releaselist.js` maps snake_case API fields (`side_a`, `side_b`, `sample_urls`) to camelCase props (`sideA`, `sideB`, `samples`) expected by `Release.js`
+
+## Before deployment
+
+- Remove "soiled top spin" from `server/seed.js` — only the Unguent "Structured Water" release should be live
+- Switch `PAYPAL_ENV` to `live` and update credentials
+- Digital file delivery (signed R2 URLs) is not yet implemented — `BuyFileBtn.js` captures payment but does not deliver a download link
+
+## Working preferences
+
+- Simple, explicit, incrementally-built solutions
+- No abstraction before it's needed
+- Complete, concrete code over abstract descriptions
