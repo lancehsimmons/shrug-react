@@ -28,7 +28,28 @@
 
 .App-link {
   color: #04cc40;
-} 
+}
+
+.App-nav {
+  margin-left: auto;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-link {
+  font-size: 18px;
+  color: black;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.nav-link-active {
+  font-weight: bold;
+}
 
 .release-list {
   margin: 20px;

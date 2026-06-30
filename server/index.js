@@ -11,5 +11,6 @@ app.use(express.json());
 app.use('/api/releases', require('./routes/releases'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/orders/:orderID/capture', require('./routes/capture'));
+app.use('/api/posts', require('./routes/posts'));
 
 app.listen(4000, () => console.log('Server running on http://localhost:4000'));
