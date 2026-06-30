@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Releaselist from './components/Releaselist.js';
 import Blog from './components/Blog.js';
+import Admin from './components/Admin.js';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             </PayPalScriptProvider>
           } />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
     </BrowserRouter>

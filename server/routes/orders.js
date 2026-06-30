@@ -9,7 +9,12 @@ router.get('/', (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const orders = db.prepare('SELECT * FROM orders ORDER BY created_at DESC').all();
+  const orders = db.prepare(`
+    SELECT orders.*, releases.title AS release_title
+    FROM orders
+    LEFT JOIN releases ON orders.release_id = releases.id
+    ORDER BY orders.created_at DESC
+  `).all();
   res.json(orders);
 });
 

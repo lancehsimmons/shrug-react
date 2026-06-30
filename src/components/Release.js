@@ -21,9 +21,9 @@ export default function MusicCard({
 
       <h2 style={{ margin: "0 0 0px", "text-align": 'left' }}>{title}</h2>
       <div style={{display:"flex"}}>
-        <p className="artist" >{artist}</p>
+        <p className="artist" style={{fontSize: "20px"}}>{artist}</p>
         <p style={{marginLeft:"12px", textAlign: "left",  
-        fontSize: "18px"}}> {date} </p>
+        fontSize: "16px"}}> {date} </p>
       </div>
 
       <div style={{margin: "8px 0px"}}>
@@ -32,15 +32,18 @@ export default function MusicCard({
       </div>
       
       <div style={{ marginTop: "16px" }}>
-        <p style={{ margin: "0 0 4px", fontWeight: "bold" }}>Side A</p>
-      <ul style={{ margin: "0 0 16px", paddingLeft: 20 }}>
-        {sideA.map((track, i) => <li key={i}>{track}</li>)}
-      </ul>
-
-      <p style={{ margin: "0 0 4px", fontWeight: "bold" }}>Side B</p>
-      <ul style={{ margin: 0, paddingLeft: 20 }}>
-        {sideB.map((track, i) => <li key={i}>{track}</li>)}
-      </ul>
+        {sideA.length > 0 && <>
+          <p style={{ margin: "0 0 4px", fontWeight: "bold" }}>{sideB.length > 0 ? "Side A" : "Tracks"}</p>
+          <ul style={{ margin: "0 0 16px", paddingLeft: 20 }}>
+            {sideA.map((track, i) => <li key={i}>{track}</li>)}
+          </ul>
+        </>}
+        {sideB.length > 0 && <>
+          <p style={{ margin: "0 0 4px", fontWeight: "bold" }}>Side B</p>
+          <ul style={{ margin: 0, paddingLeft: 20 }}>
+            {sideB.map((track, i) => <li key={i}>{track}</li>)}
+          </ul>
+        </>}
       </div>
 
 
