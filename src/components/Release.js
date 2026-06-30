@@ -13,6 +13,7 @@ export default function MusicCard({
   physprice,
   fileprice,
   downloadUrl,
+  images,
   stock
 }) {
 
@@ -26,10 +27,13 @@ export default function MusicCard({
         fontSize: "16px"}}> {date} </p>
       </div>
 
-      <div style={{margin: "8px 0px"}}>
-        <img className="release-image" src={`${process.env.PUBLIC_URL}/images/strct_wtr_1.jpg`} alt="" />
-        <img className="release-image" src={`${process.env.PUBLIC_URL}/images/strct_wtr_2.jpg`} alt="" />
-      </div>
+      {images && images.length > 0 && (
+        <div style={{margin: "8px 0px"}}>
+          {images.map((url, i) => (
+            <img key={i} className="release-image" src={url} alt="" />
+          ))}
+        </div>
+      )}
       
       <div style={{ marginTop: "16px" }}>
         {sideA.length > 0 && <>
