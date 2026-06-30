@@ -31,7 +31,7 @@
 }
 
 .App-nav {
-  margin-left: auto;
+  margin-left: 32px;
   display: flex;
   gap: 20px;
   align-items: center;

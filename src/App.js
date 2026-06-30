@@ -16,7 +16,7 @@ function App() {
             <p style={{ fontSize: "14px" }}>¯\_(ツ)_/¯¯\_(ツ)_/¯¯\_(ツ)_/¯</p>
           </div>
           <nav className="App-nav">
-            <NavLink to="/" end className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>Store</NavLink>
+            <NavLink to="/" end className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>Press</NavLink>
             <NavLink to="/blog" className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>Blog</NavLink>
           </nav>
         </header>

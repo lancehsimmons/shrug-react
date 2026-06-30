@@ -2,11 +2,12 @@
 
 ## What this project is
 
-A React storefront for Unguent music releases. Displays release cards with metadata, track listings, audio samples, and PayPal checkout. Backed by a Node/Express server with a SQLite database.
+A React storefront for Unguent music releases. Displays release cards with metadata, track listings, audio samples, and PayPal checkout. Also includes a blog. Backed by a Node/Express server with a SQLite database.
 
 ## Tech stack
 
 - React 19 (`.js` file extensions, not `.jsx`)
+- `react-router-dom` v6 for client-side routing (`/` store, `/blog`)
 - Node.js + Express server in `server/`
 - `better-sqlite3` for synchronous SQLite
 - PayPal Orders v2 REST API (sandbox credentials in `server/.env`)
@@ -25,14 +26,17 @@ shrug-react/
 │   └── routes/
 │       ├── releases.js   — GET /api/releases (public), POST /api/releases (admin)
 │       ├── orders.js     — GET /api/orders (admin), POST /api/orders
-│       └── capture.js    — POST /api/orders/:orderID/capture
+│       ├── capture.js    — POST /api/orders/:orderID/capture
+│       └── posts.js      — GET /api/posts (public), POST /api/posts (admin)
 ├── src/
-│   ├── App.js            — PayPalScriptProvider setup with client ID
+│   ├── App.js            — BrowserRouter, Routes (/ and /blog), nav in header, PayPalScriptProvider
 │   ├── components/
 │   │   ├── Releaselist.js  — Fetches all releases from API, renders list
 │   │   ├── Release.js      — Individual release card (props: id, title, artist, date, sideA, sideB, samples, physprice, fileprice, downloadUrl, stock)
 │   │   ├── BuyTapeBtn.js   — PayPal button for physical purchase
-│   │   └── BuyFileBtn.js   — PayPal button for digital purchase; renders a zip download link after successful capture
+│   │   ├── BuyFileBtn.js   — PayPal button for digital purchase; renders a zip download link after successful capture
+│   │   ├── Blog.js         — Fetches all posts from API, renders list
+│   │   └── BlogPost.js     — Individual post (title, date, images, body, audio)
 │   └── assets/
 │       └── releases.json   — Legacy data file, no longer used for rendering
 └── public/
@@ -41,7 +45,7 @@ shrug-react/
 
 ## Database schema
 
-Two tables: `releases` and `orders` — see `server/db.js` for full schema. JSON array columns (`side_a`, `side_b`, `sample_urls`, `images`) are stored as JSON strings and parsed back into arrays in the API response. `download_url` is a plain string (a zip file URL), not a JSON array.
+Three tables: `releases`, `orders`, and `posts` — see `server/db.js` for full schema. JSON array columns (`side_a`, `side_b`, `sample_urls`, `images`, `image_urls`, `audio_urls`) are stored as JSON strings and parsed back into arrays in the API response. `download_url` is a plain string (a zip file URL), not a JSON array. `posts.created_at` is set automatically by SQLite on insert.
 
 ## Running the project
 
@@ -64,6 +68,8 @@ Server runs on port 4000. React dev server proxies to it.
 | GET | `/api/orders` | `x-admin-key` | All orders, newest first |
 | POST | `/api/orders` | public | Create a PayPal order |
 | POST | `/api/orders/:orderID/capture` | public | Capture payment, decrement stock |
+| GET | `/api/posts` | public | All posts, newest first |
+| POST | `/api/posts` | `x-admin-key` | Add a new post (`title`, `body` required; `image_urls`, `audio_urls` optional arrays) |
 
 ## Environment variables (`server/.env`)
 
