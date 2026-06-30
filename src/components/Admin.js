@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const API = 'http://localhost:4000';
 
@@ -287,9 +288,60 @@ function AddPost({ adminKey }) {
   );
 }
 
+// ── Posts ─────────────────────────────────────────────────────────────────────
+
+function Posts({ adminKey }) {
+  const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
+
+  function load() {
+    fetch(`${API}/api/posts/all`, { headers: { 'x-admin-key': adminKey } })
+      .then(r => r.json())
+      .then(setPosts);
+  }
+
+  useEffect(() => { load(); }, [adminKey]);
+
+  async function toggle(post) {
+    const action = post.status === 'published' ? 'unpublish' : 'publish';
+    await fetch(`${API}/api/posts/${post.id}/${action}`, {
+      method: 'POST',
+      headers: { 'x-admin-key': adminKey },
+    });
+    load();
+  }
+
+  return (
+    <div style={sectionStyle}>
+      <h2 style={{ marginBottom: '16px' }}>Posts</h2>
+      {posts.length === 0 ? (
+        <p>No posts yet.</p>
+      ) : (
+        posts.map(post => (
+          <div key={post.id} style={{ borderBottom: '1px solid #ddd', padding: '12px 0', display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontWeight: 'bold', margin: '0 0 4px' }}>{post.title}</p>
+              <p style={{ fontSize: '12px', color: '#888', margin: '0 0 4px' }}>{post.created_at?.slice(0, 10)}</p>
+              <p style={{ fontSize: '13px', color: post.status === 'published' ? 'green' : '#aaa', margin: 0 }}>
+                {post.status === 'published' ? 'Published' : 'Draft'}
+              </p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button onClick={() => navigate(`/blog/preview/${post.id}`)} style={{ ...btnStyle, fontSize: '14px' }}>Preview</button>
+              <button onClick={() => toggle(post)} style={{ ...btnStyle, fontSize: '14px', whiteSpace: 'nowrap' }}>
+                {post.status === 'published' ? 'Unpublish' : 'Publish'}
+              </button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
 // ── Admin shell ───────────────────────────────────────────────────────────────
 
-const tabs = ['Orders', 'Add Release', 'Add Post'];
+const tabs = ['Orders', 'Posts', 'Add Release', 'Add Post'];
 
 export default function Admin() {
   const [adminKey, setAdminKey] = useState(() => localStorage.getItem('adminKey') || '');
@@ -329,6 +381,7 @@ export default function Admin() {
         <button onClick={logout} style={{ marginLeft: 'auto', fontSize: '14px', cursor: 'pointer' }}>Log out</button>
       </div>
       {tab === 'Orders' && <Orders adminKey={adminKey} />}
+      {tab === 'Posts' && <Posts adminKey={adminKey} />}
       {tab === 'Add Release' && <AddRelease adminKey={adminKey} />}
       {tab === 'Add Post' && <AddPost adminKey={adminKey} />}
     </div>

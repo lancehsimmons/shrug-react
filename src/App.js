@@ -4,6 +4,7 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Releaselist from './components/Releaselist.js';
 import Blog from './components/Blog.js';
 import Admin from './components/Admin.js';
+import BlogPreview from './components/BlogPreview.js';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           } />
           <Route path="/blog" element={<Blog />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/blog/preview/:id" element={<BlogPreview />} />
         </Routes>
       </div>
     </BrowserRouter>

@@ -50,4 +50,10 @@ db.exec(`
   );
 `);
 
+try {
+  db.exec(`ALTER TABLE posts ADD COLUMN status TEXT DEFAULT 'draft'`);
+} catch (e) {
+  // column already exists
+}
+
 module.exports = db;
