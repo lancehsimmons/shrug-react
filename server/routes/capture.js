@@ -2,6 +2,9 @@ const express = require('express');
 const { randomUUID } = require('crypto');
 const db = require('../db');
 const { BASE_URL, getAccessToken } = require('../paypal');
+const r2 = require('../r2');
+const { GetObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const router = express.Router({ mergeParams: true });
 
@@ -30,6 +33,8 @@ router.post('/', async (req, res) => {
     const breakdown = capture.seller_receivable_breakdown;
 
     const [release_id, purchase_type] = capture.custom_id.split(':');
+
+    const release = db.prepare('SELECT * FROM releases WHERE id = ?').get(Number(release_id));
 
     const update = db.prepare(
       'UPDATE releases SET stock = stock - 1 WHERE id = ? AND stock > 0'
@@ -69,7 +74,16 @@ router.post('/', async (req, res) => {
       db.prepare('SELECT id FROM orders WHERE paypal_order_id = ?').get(order.id).id
     );
 
-    res.json(saved);
+    let signedUrl = null;
+    if (purchase_type === 'digital' && release.download_url) {
+      signedUrl = await getSignedUrl(
+        r2,
+        new GetObjectCommand({ Bucket: process.env.R2_BUCKET_NAME, Key: release.download_url }),
+        { expiresIn: 3600 }
+      );
+    }
+
+    res.json({ ...saved, status: 'completed', signedUrl });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

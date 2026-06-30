@@ -12,6 +12,7 @@ A React storefront for Unguent music releases. Displays release cards with metad
 - `better-sqlite3` for synchronous SQLite
 - PayPal Orders v2 REST API (sandbox credentials in `server/.env`)
 - `@paypal/react-paypal-js` for the frontend PayPal button components
+- `@aws-sdk/client-s3` + `@aws-sdk/s3-request-presigner` for R2 signed URLs (installed in `server/`)
 - CSS Modules per component
 
 ## Project structure
@@ -23,21 +24,23 @@ shrug-react/
 │   ├── db.js             — Opens SQLite DB, creates tables on startup
 │   ├── seed.js           — Seeds releases on first run (checks before inserting)
 │   ├── paypal.js         — getAccessToken() and BASE_URL for PayPal API calls
+│   ├── r2.js             — S3Client pointed at Cloudflare R2 endpoint
 │   └── routes/
 │       ├── releases.js   — GET /api/releases (public), POST /api/releases (admin)
 │       ├── orders.js     — GET /api/orders (admin), POST /api/orders
-│       ├── capture.js    — POST /api/orders/:orderID/capture
-│       └── posts.js      — GET /api/posts (public), POST /api/posts (admin)
+│       ├── capture.js    — POST /api/orders/:orderID/capture; generates R2 signed URL for digital purchases
+│       └── posts.js      — GET /api/posts (public), POST /api/posts (admin); draft/publish workflow
 ├── src/
 │   ├── App.js            — BrowserRouter, Routes (/, /blog, /admin), nav in header, PayPalScriptProvider
 │   ├── components/
 │   │   ├── Releaselist.js  — Fetches all releases from API, renders list
 │   │   ├── Release.js      — Individual release card; Side A/B headings only render when non-empty; shows "Tracks" if no Side B
 │   │   ├── BuyTapeBtn.js   — PayPal button for physical purchase
-│   │   ├── BuyFileBtn.js   — PayPal button for digital purchase; renders a zip download link after successful capture
-│   │   ├── Blog.js         — Fetches all posts from API, renders list
+│   │   ├── BuyFileBtn.js   — PayPal button for digital purchase; renders signed R2 download link after successful capture
+│   │   ├── Blog.js         — Fetches published posts from API, renders list
 │   │   ├── BlogPost.js     — Individual post (title, date, images, body, audio)
-│   │   └── Admin.js        — Admin dashboard at /admin; login gate (key in localStorage), tabs for Orders / Add Release / Add Post
+│   │   ├── BlogPreview.js  — Renders a single post (draft or published) at /blog/preview/:id using admin key
+│   │   └── Admin.js        — Admin dashboard at /admin; tabs for Orders / Posts / Add Release / Add Post
 │   └── assets/
 │       └── releases.json   — Legacy data file, no longer used for rendering
 └── public/
@@ -46,7 +49,7 @@ shrug-react/
 
 ## Database schema
 
-Three tables: `releases`, `orders`, and `posts` — see `server/db.js` for full schema. JSON array columns (`side_a`, `side_b`, `sample_urls`, `images`, `image_urls`, `audio_urls`) are stored as JSON strings and parsed back into arrays in the API response. `download_url` is a plain string (a zip file URL), not a JSON array. `posts.created_at` is set automatically by SQLite on insert.
+Three tables: `releases`, `orders`, and `posts` — see `server/db.js` for full schema. JSON array columns (`side_a`, `side_b`, `sample_urls`, `images`, `image_urls`, `audio_urls`) are stored as JSON strings and parsed back into arrays in the API response. `download_url` stores the R2 object key (filename only, e.g. `Release-Name.zip`) — not a full URL. `posts.created_at` is set automatically by SQLite on insert. `posts.status` is `draft` or `published`; only published posts are returned by the public endpoint.
 
 ## Running the project
 
@@ -68,9 +71,13 @@ Server runs on port 4000. React dev server proxies to it.
 | POST | `/api/releases` | `x-admin-key` | Add a new release |
 | GET | `/api/orders` | `x-admin-key` | All orders newest first, joined with release title |
 | POST | `/api/orders` | public | Create a PayPal order |
-| POST | `/api/orders/:orderID/capture` | public | Capture payment, decrement stock |
-| GET | `/api/posts` | public | All posts, newest first |
-| POST | `/api/posts` | `x-admin-key` | Add a new post (`title`, `body` required; `image_urls`, `audio_urls` optional arrays) |
+| POST | `/api/orders/:orderID/capture` | public | Capture payment, decrement stock, return signed R2 URL for digital purchases |
+| GET | `/api/posts` | public | Published posts only, newest first |
+| GET | `/api/posts/all` | `x-admin-key` | All posts including drafts |
+| GET | `/api/posts/:id` | `x-admin-key` | Single post by ID (any status) |
+| POST | `/api/posts` | `x-admin-key` | Create a draft post (`title`, `body` required; `image_urls`, `audio_urls` optional) |
+| POST | `/api/posts/:id/publish` | `x-admin-key` | Publish a post |
+| POST | `/api/posts/:id/unpublish` | `x-admin-key` | Revert a post to draft |
 
 ## Environment variables (`server/.env`)
 
@@ -79,6 +86,10 @@ PAYPAL_CLIENT_ID=
 PAYPAL_CLIENT_SECRET=
 PAYPAL_ENV=sandbox
 ADMIN_KEY=
+R2_ACCOUNT_ID=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_BUCKET_NAME=
 ```
 
 ## Key design decisions
@@ -89,12 +100,15 @@ ADMIN_KEY=
 - `Releaselist.js` maps snake_case API fields (`side_a`, `side_b`, `sample_urls`, `download_url`) to camelCase props (`sideA`, `sideB`, `samples`, `downloadUrl`) expected by `Release.js`
 - `Release.js` conditionally renders Side A/B headings — omits them when arrays are empty; uses "Tracks" instead of "Side A" when there is no Side B
 - Admin dashboard at `/admin` is not linked in the main nav — navigate there directly; login validates the key against `GET /api/orders`
+- `download_url` stores the R2 object key only (e.g. `Release-Name.zip`); the capture route uses it with `R2_BUCKET_NAME` to generate a 1-hour signed URL returned in the capture response
+- Signed URLs are generated server-side using `@aws-sdk/s3-request-presigner` with the R2 S3-compatible endpoint — no AWS infrastructure involved
+- Blog posts are created as drafts; use the Posts tab in `/admin` to preview and publish
 
 ## Before deployment
 
 - Remove "soiled top spin" from `server/seed.js` — only the Unguent "Structured Water" release should be live
-- Switch `PAYPAL_ENV` to `live` and update credentials
-- Digital file delivery uses a single zip file URL stored in `download_url` — shown as a download link after a successful capture. Signed URLs are not yet implemented; the link is publicly accessible.
+- Switch `PAYPAL_ENV` to `live` and update PayPal credentials
+- Disable the R2 public development URL on the `shrugfiles` bucket so files are only accessible via signed URLs
 
 ## Working preferences
 

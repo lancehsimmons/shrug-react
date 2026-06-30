@@ -221,8 +221,8 @@ function AddRelease({ adminKey }) {
         <Field label="Images" hint="One image URL per line">
           <textarea rows={3} style={fieldStyle} value={form.images} onChange={set('images')} placeholder={"https://example.com/cover.jpg\nhttps://example.com/back.jpg"} />
         </Field>
-        <Field label="Download URL" hint="Single zip file URL for digital delivery">
-          <input style={fieldStyle} value={form.download_url} onChange={set('download_url')} placeholder="https://example.com/release.zip" />
+        <Field label="Download file" hint="Filename of the zip in your R2 bucket">
+          <input style={fieldStyle} value={form.download_url} onChange={set('download_url')} placeholder="Release-Name.zip" />
         </Field>
         {status && <p style={{ marginBottom: '12px', color: status.startsWith('Error') ? 'red' : 'green' }}>{status}</p>}
         <button type="submit" style={btnStyle}>Add Release</button>
