@@ -143,7 +143,7 @@ function Orders({ adminKey }) {
 function AddRelease({ adminKey }) {
   const empty = {
     title: '', artist: '', date: '', physprice: '', fileprice: '', stock: '0',
-    side_a: '', side_b: '', notes: '', sample_urls: '', download_url: '',
+    side_a: '', side_b: '', notes: '', sample_urls: '', download_url: '', images: '',
   };
   const [form, setForm] = useState(empty);
   const [status, setStatus] = useState('');
@@ -166,6 +166,7 @@ function AddRelease({ adminKey }) {
       side_a: form.side_a.split('\n').map(s => s.trim()).filter(Boolean),
       side_b: form.side_b.split('\n').map(s => s.trim()).filter(Boolean),
       sample_urls: form.sample_urls.split('\n').map(s => s.trim()).filter(Boolean),
+      images: form.images.split('\n').map(s => s.trim()).filter(Boolean),
       download_url: form.download_url || undefined,
     };
     const res = await fetch(`${API}/api/releases`, {
@@ -215,6 +216,9 @@ function AddRelease({ adminKey }) {
         </Field>
         <Field label="Notes" hint="Optional liner notes or description">
           <textarea rows={4} style={fieldStyle} value={form.notes} onChange={set('notes')} placeholder="Optional notes about the release..." />
+        </Field>
+        <Field label="Images" hint="One image URL per line">
+          <textarea rows={3} style={fieldStyle} value={form.images} onChange={set('images')} placeholder={"https://example.com/cover.jpg\nhttps://example.com/back.jpg"} />
         </Field>
         <Field label="Download URL" hint="Single zip file URL for digital delivery">
           <input style={fieldStyle} value={form.download_url} onChange={set('download_url')} placeholder="https://example.com/release.zip" />

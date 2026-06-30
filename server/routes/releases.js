@@ -15,7 +15,7 @@ function parseRelease(row) {
 }
 
 router.get('/', (req, res) => {
-  const releases = db.prepare('SELECT * FROM releases').all().map(parseRelease);
+  const releases = db.prepare('SELECT * FROM releases ORDER BY id DESC').all().map(parseRelease);
   res.json(releases);
 });
 
