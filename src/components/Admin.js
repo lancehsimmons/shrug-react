@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Admin.css';
 
 const API = 'http://localhost:4000';
 
@@ -106,34 +107,36 @@ function Orders({ adminKey }) {
       {orders.length === 0 ? (
         <p>No orders yet.</p>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-          <thead>
-            <tr style={{ borderBottom: '2px solid black', textAlign: 'left' }}>
-              <th style={{ padding: '6px 8px' }}>Date</th>
-              <th style={{ padding: '6px 8px' }}>Release</th>
-              <th style={{ padding: '6px 8px' }}>Type</th>
-              <th style={{ padding: '6px 8px' }}>Amount</th>
-              <th style={{ padding: '6px 8px' }}>Payer</th>
-              <th style={{ padding: '6px 8px' }}>Email</th>
-              <th style={{ padding: '6px 8px' }}>Shipping</th>
-              <th style={{ padding: '6px 8px' }}>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map(o => (
-              <tr key={o.id} style={{ borderBottom: '1px solid #ddd' }}>
-                <td style={{ padding: '6px 8px' }}>{o.created_at?.slice(0, 10)}</td>
-                <td style={{ padding: '6px 8px' }}>{o.release_title ?? o.release_id}</td>
-                <td style={{ padding: '6px 8px' }}>{o.purchase_type}</td>
-                <td style={{ padding: '6px 8px' }}>${o.amount?.toFixed(2)}</td>
-                <td style={{ padding: '6px 8px' }}>{o.payer_name || '—'}</td>
-                <td style={{ padding: '6px 8px' }}>{o.payer_email || '—'}</td>
-                <td style={{ padding: '6px 8px' }}>{formatAddress(o.shipping_address)}</td>
-                <td style={{ padding: '6px 8px' }}>{o.status}</td>
+        <div className="table-scroll">
+          <table className="orders-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Release</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Payer</th>
+                <th>Email</th>
+                <th>Shipping</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {orders.map(o => (
+                <tr key={o.id}>
+                  <td>{o.created_at?.slice(0, 10)}</td>
+                  <td>{o.release_title ?? o.release_id}</td>
+                  <td>{o.purchase_type}</td>
+                  <td>${o.amount?.toFixed(2)}</td>
+                  <td>{o.payer_name || '—'}</td>
+                  <td>{o.payer_email || '—'}</td>
+                  <td>{formatAddress(o.shipping_address)}</td>
+                  <td>{o.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
@@ -318,15 +321,15 @@ function Posts({ adminKey }) {
         <p>No posts yet.</p>
       ) : (
         posts.map(post => (
-          <div key={post.id} style={{ borderBottom: '1px solid #ddd', padding: '12px 0', display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-            <div style={{ flex: 1 }}>
+          <div key={post.id} className="post-row">
+            <div className="post-info">
               <p style={{ fontWeight: 'bold', margin: '0 0 4px' }}>{post.title}</p>
               <p style={{ fontSize: '12px', color: '#888', margin: '0 0 4px' }}>{post.created_at?.slice(0, 10)}</p>
               <p style={{ fontSize: '13px', color: post.status === 'published' ? 'green' : '#aaa', margin: 0 }}>
                 {post.status === 'published' ? 'Published' : 'Draft'}
               </p>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div className="post-actions">
               <button onClick={() => navigate(`/blog/preview/${post.id}`)} style={{ ...btnStyle, fontSize: '14px' }}>Preview</button>
               <button onClick={() => toggle(post)} style={{ ...btnStyle, fontSize: '14px', whiteSpace: 'nowrap' }}>
                 {post.status === 'published' ? 'Unpublish' : 'Publish'}
@@ -356,8 +359,8 @@ export default function Admin() {
 
   return (
     <div style={{ padding: '32px 24px' }}>
-      <div style={{ maxWidth: 640, margin: '0 auto 32px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <div style={{ display: 'flex', gap: '12px' }}>
+      <div className="admin-header">
+        <div className="admin-tabs">
           {tabs.map(t => (
             <button
               key={t}
@@ -378,7 +381,7 @@ export default function Admin() {
             </button>
           ))}
         </div>
-        <button onClick={logout} style={{ marginLeft: 'auto', fontSize: '14px', cursor: 'pointer' }}>Log out</button>
+        <button onClick={logout} className="admin-logout">Log out</button>
       </div>
       {tab === 'Orders' && <Orders adminKey={adminKey} />}
       {tab === 'Posts' && <Posts adminKey={adminKey} />}

@@ -21,10 +21,9 @@ export default function MusicCard({
     <div className="release-card" >
 
       <h2 style={{ margin: "0 0 0px", "text-align": 'left' }}>{title}</h2>
-      <div style={{display:"flex"}}>
-        <p className="artist" style={{fontSize: "20px"}}>{artist}</p>
-        <p style={{marginLeft:"12px", textAlign: "left",  
-        fontSize: "16px"}}> {date} </p>
+      <div className="release-meta">
+        <p className="artist">{artist}</p>
+        <p className="release-date">{date}</p>
       </div>
 
       {images && images.length > 0 && (
