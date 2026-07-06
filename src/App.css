@@ -26,6 +26,18 @@
   padding: 3vh
 }
 
+@media (max-width: 600px) {
+  .App-header {
+    flex-direction: column;
+  }
+
+  .App-nav {
+    margin-left: 0;
+    justify-content: center;
+    margin-top: 12px;
+  }
+}
+
 .App-link {
   color: #04cc40;
 }
