@@ -206,6 +206,157 @@ function AddRelease({ adminKey }) {
   );
 }
 
+// ── Edit Release ──────────────────────────────────────────────────────────────
+
+function EditRelease({ release, adminKey, onCancel, onSaved }) {
+  const [form, setForm] = useState({
+    title: release.title || '',
+    artist: release.artist || '',
+    date: release.date || '',
+    physprice: String(release.physprice ?? ''),
+    fileprice: String(release.fileprice ?? ''),
+    stock: String(release.stock ?? '0'),
+    side_a: (release.side_a || []).join('\n'),
+    side_b: (release.side_b || []).join('\n'),
+    notes: release.notes || '',
+    sample_urls: (release.sample_urls || []).join('\n'),
+    download_url: release.download_url || '',
+    images: (release.images || []).join('\n'),
+  });
+  const [status, setStatus] = useState('');
+
+  function set(field) {
+    return e => setForm(f => ({ ...f, [field]: e.target.value }));
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setStatus('');
+    const body = {
+      title: form.title,
+      artist: form.artist || undefined,
+      date: form.date || undefined,
+      physprice: parseFloat(form.physprice),
+      fileprice: parseFloat(form.fileprice),
+      stock: parseInt(form.stock, 10),
+      notes: form.notes || undefined,
+      side_a: form.side_a.split('\n').map(s => s.trim()).filter(Boolean),
+      side_b: form.side_b.split('\n').map(s => s.trim()).filter(Boolean),
+      sample_urls: form.sample_urls.split('\n').map(s => s.trim()).filter(Boolean),
+      images: form.images.split('\n').map(s => s.trim()).filter(Boolean),
+      download_url: form.download_url || undefined,
+    };
+    const res = await fetch(`${API}/api/releases/${release.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      onSaved();
+    } else {
+      const err = await res.json();
+      setStatus(`Error: ${err.error}`);
+    }
+  }
+
+  return (
+    <div className="admin-section">
+      <h2 className="section-heading">Edit Release</h2>
+      <form onSubmit={handleSubmit}>
+        <Field label="Title *">
+          <input required className="field-input" value={form.title} onChange={set('title')} />
+        </Field>
+        <Field label="Artist">
+          <input className="field-input" value={form.artist} onChange={set('artist')} />
+        </Field>
+        <Field label="Date" hint="Short date label shown on the card">
+          <input className="field-input" value={form.date} onChange={set('date')} />
+        </Field>
+        <Field label="Physical price *" hint="USD, e.g. 15.00">
+          <input required type="number" min="0" step="0.01" className="field-input" value={form.physprice} onChange={set('physprice')} />
+        </Field>
+        <Field label="File price *" hint="USD, e.g. 6.00">
+          <input required type="number" min="0" step="0.01" className="field-input" value={form.fileprice} onChange={set('fileprice')} />
+        </Field>
+        <Field label="Stock *" hint="Number of physical copies available">
+          <input required type="number" min="0" step="1" className="field-input" value={form.stock} onChange={set('stock')} />
+        </Field>
+        <Field label="Side A tracks" hint="One track title per line">
+          <textarea rows={4} className="field-input" value={form.side_a} onChange={set('side_a')} />
+        </Field>
+        <Field label="Side B tracks" hint="One track title per line">
+          <textarea rows={4} className="field-input" value={form.side_b} onChange={set('side_b')} />
+        </Field>
+        <Field label="Sample URLs" hint="One audio file URL per line">
+          <textarea rows={4} className="field-input" value={form.sample_urls} onChange={set('sample_urls')} />
+        </Field>
+        <Field label="Notes" hint="Optional liner notes or description">
+          <textarea rows={4} className="field-input" value={form.notes} onChange={set('notes')} />
+        </Field>
+        <Field label="Images" hint="One image URL per line">
+          <textarea rows={3} className="field-input" value={form.images} onChange={set('images')} />
+        </Field>
+        <Field label="Download file" hint="Filename of the zip in your R2 bucket">
+          <input className="field-input" value={form.download_url} onChange={set('download_url')} />
+        </Field>
+        {status && <p className="status-msg error">{status}</p>}
+        <div className="post-actions">
+          <button type="submit" className="btn">Save Changes</button>
+          <button type="button" onClick={onCancel} className="btn btn-sm">Cancel</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+// ── Releases ──────────────────────────────────────────────────────────────────
+
+function Releases({ adminKey }) {
+  const [releases, setReleases] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+
+  function load() {
+    fetch(`${API}/api/releases`)
+      .then(r => r.json())
+      .then(setReleases);
+  }
+
+  useEffect(() => { load(); }, []);
+
+  const editingRelease = releases.find(r => r.id === editingId);
+  if (editingRelease) {
+    return (
+      <EditRelease
+        release={editingRelease}
+        adminKey={adminKey}
+        onCancel={() => setEditingId(null)}
+        onSaved={() => { setEditingId(null); load(); }}
+      />
+    );
+  }
+
+  return (
+    <div className="admin-section">
+      <h2 className="section-heading">Releases</h2>
+      {releases.length === 0 ? (
+        <p>No releases yet.</p>
+      ) : (
+        releases.map(release => (
+          <div key={release.id} className="post-row">
+            <div className="post-info">
+              <p className="post-title">{release.title}</p>
+              <p className="meta-text">{release.artist || '—'} · {release.date || '—'} · Stock: {release.stock}</p>
+            </div>
+            <div className="post-actions">
+              <button onClick={() => setEditingId(release.id)} className="btn btn-sm">Edit</button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
 // ── Add Post ──────────────────────────────────────────────────────────────────
 
 function AddPost({ adminKey }) {
@@ -393,7 +544,7 @@ function Posts({ adminKey }) {
 
 // ── Admin shell ───────────────────────────────────────────────────────────────
 
-const tabs = ['Orders', 'Posts', 'Add Release', 'Add Post'];
+const tabs = ['Orders', 'Releases', 'Posts', 'Add Release', 'Add Post'];
 
 export default function Admin() {
   const [adminKey, setAdminKey] = useState(() => localStorage.getItem('adminKey') || '');
@@ -423,6 +574,7 @@ export default function Admin() {
         <button onClick={logout} className="admin-logout">Log out</button>
       </div>
       {tab === 'Orders' && <Orders adminKey={adminKey} />}
+      {tab === 'Releases' && <Releases adminKey={adminKey} />}
       {tab === 'Posts' && <Posts adminKey={adminKey} />}
       {tab === 'Add Release' && <AddRelease adminKey={adminKey} />}
       {tab === 'Add Post' && <AddPost adminKey={adminKey} />}

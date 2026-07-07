@@ -52,4 +52,43 @@ router.post('/', (req, res) => {
   res.status(201).json(parseRelease(release));
 });
 
+router.put('/:id', (req, res) => {
+  if (req.headers['x-admin-key'] !== process.env.ADMIN_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const release = db.prepare('SELECT * FROM releases WHERE id = ?').get(req.params.id);
+  if (!release) return res.status(404).json({ error: 'Not found' });
+
+  const { title, artist, date, time, side_a, side_b, notes, sample_urls, images, physprice, fileprice, stock, download_url } = req.body;
+
+  if (!title || physprice == null || fileprice == null) {
+    return res.status(400).json({ error: 'title, physprice, and fileprice are required' });
+  }
+
+  db.prepare(`
+    UPDATE releases
+    SET title = ?, artist = ?, date = ?, time = ?, side_a = ?, side_b = ?, notes = ?, sample_urls = ?, images = ?, physprice = ?, fileprice = ?, stock = ?, download_url = ?
+    WHERE id = ?
+  `).run(
+    title,
+    artist || null,
+    date || null,
+    time || null,
+    JSON.stringify(side_a || []),
+    JSON.stringify(side_b || []),
+    notes || '',
+    JSON.stringify(sample_urls || []),
+    JSON.stringify(images || []),
+    physprice,
+    fileprice,
+    stock ?? 0,
+    download_url || null,
+    req.params.id
+  );
+
+  const updated = db.prepare('SELECT * FROM releases WHERE id = ?').get(req.params.id);
+  res.json(parseRelease(updated));
+});
+
 module.exports = router;

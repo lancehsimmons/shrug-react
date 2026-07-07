@@ -69,6 +69,7 @@ Server runs on port 4000. React dev server proxies to it.
 |---|---|---|---|
 | GET | `/api/releases` | public | All releases with parsed JSON columns |
 | POST | `/api/releases` | `x-admin-key` | Add a new release |
+| PUT | `/api/releases/:id` | `x-admin-key` | Update a release's fields (title, artist, date, prices, stock, tracks, notes, urls) |
 | GET | `/api/orders` | `x-admin-key` | All orders newest first, joined with release title |
 | POST | `/api/orders` | public | Create a PayPal order |
 | POST | `/api/orders/:orderID/capture` | public | Capture payment, decrement stock, return signed R2 URL for digital purchases |
