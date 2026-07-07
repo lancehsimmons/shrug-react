@@ -35,12 +35,12 @@ export default function MusicCard({
       )}
       
       <div style={{ marginTop: "16px" }}>
-        {sideA.length > 0 && <>
+        {sideA.length > 0 && <div>
           <p style={{ margin: "0 0 4px", fontWeight: "bold" }}>{sideB.length > 0 ? "Side A" : "Tracks"}</p>
           <ul style={{ margin: "0 0 16px", paddingLeft: 20 }}>
             {sideA.map((track, i) => <li key={i}>{track}</li>)}
           </ul>
-        </>}
+        </div>}
         {sideB.length > 0 && <>
           <p style={{ margin: "0 0 4px", fontWeight: "bold" }}>Side B</p>
           <ul style={{ margin: 0, paddingLeft: 20 }}>
@@ -59,7 +59,7 @@ export default function MusicCard({
       </ul> 
       
       <div style={{ marginTop: "16px" }}>
-        <p style={{ margin: "0 0 8px", fontWeight: "bold" }}>Physical Media — ${physprice}</p>
+        <p style={{ margin: "0 0 8px", fontWeight: "bold" }}>Physical Media — ${physprice} USPP</p>
         {stock > 0 ? (
           <BuyButton price={physprice} title={title} releaseId={id} />
         ) : (

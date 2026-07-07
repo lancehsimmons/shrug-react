@@ -11,7 +11,9 @@ function App() {
     <BrowserRouter>
       <div className="App">
         <header className="App-header">
-          <h1>¯\_(ツ)_/¯</h1>
+          <div>
+            <h1>¯\_(ツ)_/¯</h1>
+          </div>
           <div style={{ display: "flex", flexDirection: "column", marginLeft: "8px" }}>
             <p style={{ fontSize: "18px" }}>Shrug is a private press</p>
             <p style={{ fontSize: "18px" }}>for the Holocene Epoch</p>
