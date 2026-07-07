@@ -19,7 +19,7 @@
 }
 
 .blog-post-image {
-  max-width: 100%;
+  max-width: 60%;
   display: block;
   margin-bottom: 8px;
 }
@@ -35,4 +35,10 @@
 
 .blog-post-audio-item {
   margin-bottom: 8px;
+}
+
+@media (max-width: 600px) {
+  .blog-post-image {
+    max-width: 100%;
+  }
 }
