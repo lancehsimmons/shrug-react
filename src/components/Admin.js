@@ -263,10 +263,74 @@ function AddPost({ adminKey }) {
   );
 }
 
+// ── Edit Post ─────────────────────────────────────────────────────────────────
+
+function EditPost({ post, adminKey, onCancel, onSaved }) {
+  const [form, setForm] = useState({
+    title: post.title,
+    body: post.body,
+    image_urls: post.image_urls.join('\n'),
+    audio_urls: post.audio_urls.join('\n'),
+  });
+  const [status, setStatus] = useState('');
+
+  function set(field) {
+    return e => setForm(f => ({ ...f, [field]: e.target.value }));
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setStatus('');
+    const body = {
+      title: form.title,
+      body: form.body,
+      image_urls: form.image_urls.split('\n').map(s => s.trim()).filter(Boolean),
+      audio_urls: form.audio_urls.split('\n').map(s => s.trim()).filter(Boolean),
+    };
+    const res = await fetch(`${API}/api/posts/${post.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      onSaved();
+    } else {
+      const err = await res.json();
+      setStatus(`Error: ${err.error}`);
+    }
+  }
+
+  return (
+    <div className="admin-section">
+      <h2 className="section-heading">Edit Post</h2>
+      <form onSubmit={handleSubmit}>
+        <Field label="Title *">
+          <input required className="field-input" value={form.title} onChange={set('title')} />
+        </Field>
+        <Field label="Body *" hint="Plain text; line breaks are preserved">
+          <textarea required rows={8} className="field-input" value={form.body} onChange={set('body')} />
+        </Field>
+        <Field label="Image URLs" hint="One image URL per line">
+          <textarea rows={3} className="field-input" value={form.image_urls} onChange={set('image_urls')} />
+        </Field>
+        <Field label="Audio URLs" hint="One audio file URL per line">
+          <textarea rows={3} className="field-input" value={form.audio_urls} onChange={set('audio_urls')} />
+        </Field>
+        {status && <p className="status-msg error">{status}</p>}
+        <div className="post-actions">
+          <button type="submit" className="btn">Save Changes</button>
+          <button type="button" onClick={onCancel} className="btn btn-sm">Cancel</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
 // ── Posts ─────────────────────────────────────────────────────────────────────
 
 function Posts({ adminKey }) {
   const [posts, setPosts] = useState([]);
+  const [editingId, setEditingId] = useState(null);
   const navigate = useNavigate();
 
   function load() {
@@ -286,6 +350,18 @@ function Posts({ adminKey }) {
     load();
   }
 
+  const editingPost = posts.find(p => p.id === editingId);
+  if (editingPost) {
+    return (
+      <EditPost
+        post={editingPost}
+        adminKey={adminKey}
+        onCancel={() => setEditingId(null)}
+        onSaved={() => { setEditingId(null); load(); }}
+      />
+    );
+  }
+
   return (
     <div className="admin-section">
       <h2 className="section-heading">Posts</h2>
@@ -303,6 +379,7 @@ function Posts({ adminKey }) {
             </div>
             <div className="post-actions">
               <button onClick={() => navigate(`/blog/preview/${post.id}`)} className="btn btn-sm">Preview</button>
+              <button onClick={() => setEditingId(post.id)} className="btn btn-sm">Edit</button>
               <button onClick={() => toggle(post)} className="btn btn-sm">
                 {post.status === 'published' ? 'Unpublish' : 'Publish'}
               </button>

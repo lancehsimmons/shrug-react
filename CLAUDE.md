@@ -76,6 +76,7 @@ Server runs on port 4000. React dev server proxies to it.
 | GET | `/api/posts/all` | `x-admin-key` | All posts including drafts |
 | GET | `/api/posts/:id` | `x-admin-key` | Single post by ID (any status) |
 | POST | `/api/posts` | `x-admin-key` | Create a draft post (`title`, `body` required; `image_urls`, `audio_urls` optional) |
+| PUT | `/api/posts/:id` | `x-admin-key` | Update a post's `title`, `body`, `image_urls`, `audio_urls` (any status) |
 | POST | `/api/posts/:id/publish` | `x-admin-key` | Publish a post |
 | POST | `/api/posts/:id/unpublish` | `x-admin-key` | Revert a post to draft |
 

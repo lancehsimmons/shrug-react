@@ -48,6 +48,34 @@ router.get('/:id', (req, res) => {
   res.json(parsePost(post));
 });
 
+router.put('/:id', (req, res) => {
+  if (req.headers['x-admin-key'] !== process.env.ADMIN_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.id);
+  if (!post) return res.status(404).json({ error: 'Not found' });
+
+  const { title, body, image_urls, audio_urls } = req.body;
+  if (!title || !body) {
+    return res.status(400).json({ error: 'title and body are required' });
+  }
+
+  db.prepare(`
+    UPDATE posts SET title = ?, body = ?, image_urls = ?, audio_urls = ?
+    WHERE id = ?
+  `).run(
+    title,
+    body,
+    JSON.stringify(image_urls || []),
+    JSON.stringify(audio_urls || []),
+    req.params.id
+  );
+
+  const updated = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.id);
+  res.json(parsePost(updated));
+});
+
 router.post('/', (req, res) => {
   if (req.headers['x-admin-key'] !== process.env.ADMIN_KEY) {
     return res.status(401).json({ error: 'Unauthorized' });
