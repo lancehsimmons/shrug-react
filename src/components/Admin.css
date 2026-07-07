@@ -1,3 +1,121 @@
+.admin-page {
+  padding: 32px 24px;
+}
+
+.admin-section {
+  max-width: 640px;
+  margin: 0 auto 48px;
+  text-align: left;
+}
+
+.orders-section {
+  max-width: 960px;
+  margin: 0 auto 48px;
+  text-align: left;
+}
+
+.section-heading {
+  margin-bottom: 16px;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.meta-text {
+  font-size: 12px;
+  color: #888;
+  margin: 0 0 4px;
+}
+
+.field-input {
+  display: block;
+  width: 100%;
+  margin-bottom: 16px;
+  font-size: 16px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+}
+
+.field-error {
+  color: red;
+  margin-bottom: 12px;
+}
+
+.btn {
+  padding: 8px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-sm {
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.status-msg {
+  margin-bottom: 12px;
+}
+
+.status-msg.error {
+  color: red;
+}
+
+.status-msg.success {
+  color: green;
+}
+
+.login {
+  max-width: 320px;
+  margin: 80px auto;
+  text-align: left;
+}
+
+.login-title {
+  margin-bottom: 24px;
+}
+
+.post-title {
+  font-weight: bold;
+  margin: 0 0 4px;
+}
+
+.post-status {
+  font-size: 13px;
+  margin: 0;
+}
+
+.post-status.published {
+  color: green;
+}
+
+.post-status.draft {
+  color: #aaa;
+}
+
+.tab-btn {
+  padding: 4px 0;
+  margin-right: 16px;
+  font-size: 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.tab-btn.active {
+  font-weight: bold;
+  border-bottom: 2px solid black;
+}
+
 .admin-header {
   max-width: 640px;
   margin: 0 auto 32px;

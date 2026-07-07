@@ -4,39 +4,11 @@ import './Admin.css';
 
 const API = 'http://localhost:4000';
 
-const sectionStyle = {
-  maxWidth: 640,
-  margin: '0 auto 48px',
-  textAlign: 'left',
-};
-
-const fieldStyle = {
-  display: 'block',
-  width: '100%',
-  marginBottom: '16px',
-  fontSize: '16px',
-  padding: '6px 8px',
-  boxSizing: 'border-box',
-};
-
-const labelStyle = {
-  display: 'block',
-  fontWeight: 'bold',
-  marginBottom: '4px',
-  fontSize: '14px',
-};
-
-const btnStyle = {
-  padding: '8px 20px',
-  fontSize: '16px',
-  cursor: 'pointer',
-};
-
 function Field({ label, hint, children }) {
   return (
-    <div style={{ marginBottom: '16px' }}>
-      <label style={labelStyle}>{label}</label>
-      {hint && <p style={{ fontSize: '12px', color: '#888', margin: '0 0 4px' }}>{hint}</p>}
+    <div className="field">
+      <label className="field-label">{label}</label>
+      {hint && <p className="meta-text">{hint}</p>}
       {children}
     </div>
   );
@@ -60,20 +32,20 @@ function Login({ onLogin }) {
   }
 
   return (
-    <div style={{ maxWidth: 320, margin: '80px auto', textAlign: 'left' }}>
-      <h2 style={{ marginBottom: '24px' }}>Admin Login</h2>
+    <div className="login">
+      <h2 className="login-title">Admin Login</h2>
       <form onSubmit={handleSubmit}>
         <Field label="Admin key">
           <input
             type="password"
             value={key}
             onChange={e => setKey(e.target.value)}
-            style={fieldStyle}
+            className="field-input"
             placeholder="Enter admin key"
           />
         </Field>
-        {error && <p style={{ color: 'red', marginBottom: '12px' }}>{error}</p>}
-        <button type="submit" style={btnStyle}>Log in</button>
+        {error && <p className="field-error">{error}</p>}
+        <button type="submit" className="btn">Log in</button>
       </form>
     </div>
   );
@@ -102,8 +74,8 @@ function Orders({ adminKey }) {
   }, [adminKey]);
 
   return (
-    <div style={sectionStyle}>
-      <h2 style={{ marginBottom: '16px' }}>Orders</h2>
+    <div className="orders-section">
+      <h2 className="section-heading">Orders</h2>
       {orders.length === 0 ? (
         <p>No orders yet.</p>
       ) : (
@@ -188,47 +160,47 @@ function AddRelease({ adminKey }) {
   }
 
   return (
-    <div style={sectionStyle}>
-      <h2 style={{ marginBottom: '16px' }}>Add Release</h2>
+    <div className="admin-section">
+      <h2 className="section-heading">Add Release</h2>
       <form onSubmit={handleSubmit}>
         <Field label="Title *">
-          <input required style={fieldStyle} value={form.title} onChange={set('title')} placeholder='e.g. "Structured Water"' />
+          <input required className="field-input" value={form.title} onChange={set('title')} placeholder='e.g. "Structured Water"' />
         </Field>
         <Field label="Artist">
-          <input style={fieldStyle} value={form.artist} onChange={set('artist')} placeholder='e.g. "Unguent"' />
+          <input className="field-input" value={form.artist} onChange={set('artist')} placeholder='e.g. "Unguent"' />
         </Field>
         <Field label="Date" hint="Short date label shown on the card">
-          <input style={fieldStyle} value={form.date} onChange={set('date')} placeholder='e.g. "6.26"' />
+          <input className="field-input" value={form.date} onChange={set('date')} placeholder='e.g. "6.26"' />
         </Field>
         <Field label="Physical price *" hint="USD, e.g. 15.00">
-          <input required type="number" min="0" step="0.01" style={fieldStyle} value={form.physprice} onChange={set('physprice')} placeholder="15.00" />
+          <input required type="number" min="0" step="0.01" className="field-input" value={form.physprice} onChange={set('physprice')} placeholder="15.00" />
         </Field>
         <Field label="File price *" hint="USD, e.g. 6.00">
-          <input required type="number" min="0" step="0.01" style={fieldStyle} value={form.fileprice} onChange={set('fileprice')} placeholder="6.00" />
+          <input required type="number" min="0" step="0.01" className="field-input" value={form.fileprice} onChange={set('fileprice')} placeholder="6.00" />
         </Field>
         <Field label="Stock *" hint="Number of physical copies available">
-          <input required type="number" min="0" step="1" style={fieldStyle} value={form.stock} onChange={set('stock')} placeholder="10" />
+          <input required type="number" min="0" step="1" className="field-input" value={form.stock} onChange={set('stock')} placeholder="10" />
         </Field>
         <Field label="Side A tracks" hint="One track title per line">
-          <textarea rows={4} style={fieldStyle} value={form.side_a} onChange={set('side_a')} placeholder={"Theory of Disinformation II\nRe-Equivalence"} />
+          <textarea rows={4} className="field-input" value={form.side_a} onChange={set('side_a')} placeholder={"Theory of Disinformation II\nRe-Equivalence"} />
         </Field>
         <Field label="Side B tracks" hint="One track title per line">
-          <textarea rows={4} style={fieldStyle} value={form.side_b} onChange={set('side_b')} placeholder={"ZnCO₃ + TiO₂ + K₂O"} />
+          <textarea rows={4} className="field-input" value={form.side_b} onChange={set('side_b')} placeholder={"ZnCO₃ + TiO₂ + K₂O"} />
         </Field>
         <Field label="Sample URLs" hint="One audio file URL per line">
-          <textarea rows={4} style={fieldStyle} value={form.sample_urls} onChange={set('sample_urls')} placeholder={"https://example.com/sample1.wav\nhttps://example.com/sample2.wav"} />
+          <textarea rows={4} className="field-input" value={form.sample_urls} onChange={set('sample_urls')} placeholder={"https://example.com/sample1.wav\nhttps://example.com/sample2.wav"} />
         </Field>
         <Field label="Notes" hint="Optional liner notes or description">
-          <textarea rows={4} style={fieldStyle} value={form.notes} onChange={set('notes')} placeholder="Optional notes about the release..." />
+          <textarea rows={4} className="field-input" value={form.notes} onChange={set('notes')} placeholder="Optional notes about the release..." />
         </Field>
         <Field label="Images" hint="One image URL per line">
-          <textarea rows={3} style={fieldStyle} value={form.images} onChange={set('images')} placeholder={"https://example.com/cover.jpg\nhttps://example.com/back.jpg"} />
+          <textarea rows={3} className="field-input" value={form.images} onChange={set('images')} placeholder={"https://example.com/cover.jpg\nhttps://example.com/back.jpg"} />
         </Field>
         <Field label="Download file" hint="Filename of the zip in your R2 bucket">
-          <input style={fieldStyle} value={form.download_url} onChange={set('download_url')} placeholder="Release-Name.zip" />
+          <input className="field-input" value={form.download_url} onChange={set('download_url')} placeholder="Release-Name.zip" />
         </Field>
-        {status && <p style={{ marginBottom: '12px', color: status.startsWith('Error') ? 'red' : 'green' }}>{status}</p>}
-        <button type="submit" style={btnStyle}>Add Release</button>
+        {status && <p className={`status-msg ${status.startsWith('Error') ? 'error' : 'success'}`}>{status}</p>}
+        <button type="submit" className="btn">Add Release</button>
       </form>
     </div>
   );
@@ -269,23 +241,23 @@ function AddPost({ adminKey }) {
   }
 
   return (
-    <div style={sectionStyle}>
-      <h2 style={{ marginBottom: '16px' }}>Add Blog Post</h2>
+    <div className="admin-section">
+      <h2 className="section-heading">Add Blog Post</h2>
       <form onSubmit={handleSubmit}>
         <Field label="Title *">
-          <input required style={fieldStyle} value={form.title} onChange={set('title')} placeholder='e.g. "New Release Announcement"' />
+          <input required className="field-input" value={form.title} onChange={set('title')} placeholder='e.g. "New Release Announcement"' />
         </Field>
         <Field label="Body *" hint="Plain text; line breaks are preserved">
-          <textarea required rows={8} style={fieldStyle} value={form.body} onChange={set('body')} placeholder="Write your post here..." />
+          <textarea required rows={8} className="field-input" value={form.body} onChange={set('body')} placeholder="Write your post here..." />
         </Field>
         <Field label="Image URLs" hint="One image URL per line">
-          <textarea rows={3} style={fieldStyle} value={form.image_urls} onChange={set('image_urls')} placeholder={"https://example.com/photo.jpg\nhttps://example.com/photo2.jpg"} />
+          <textarea rows={3} className="field-input" value={form.image_urls} onChange={set('image_urls')} placeholder={"https://example.com/photo.jpg\nhttps://example.com/photo2.jpg"} />
         </Field>
         <Field label="Audio URLs" hint="One audio file URL per line">
-          <textarea rows={3} style={fieldStyle} value={form.audio_urls} onChange={set('audio_urls')} placeholder={"https://example.com/track.wav\nhttps://example.com/track2.wav"} />
+          <textarea rows={3} className="field-input" value={form.audio_urls} onChange={set('audio_urls')} placeholder={"https://example.com/track.wav\nhttps://example.com/track2.wav"} />
         </Field>
-        {status && <p style={{ marginBottom: '12px', color: status.startsWith('Error') ? 'red' : 'green' }}>{status}</p>}
-        <button type="submit" style={btnStyle}>Add Post</button>
+        {status && <p className={`status-msg ${status.startsWith('Error') ? 'error' : 'success'}`}>{status}</p>}
+        <button type="submit" className="btn">Add Post</button>
       </form>
     </div>
   );
@@ -315,23 +287,23 @@ function Posts({ adminKey }) {
   }
 
   return (
-    <div style={sectionStyle}>
-      <h2 style={{ marginBottom: '16px' }}>Posts</h2>
+    <div className="admin-section">
+      <h2 className="section-heading">Posts</h2>
       {posts.length === 0 ? (
         <p>No posts yet.</p>
       ) : (
         posts.map(post => (
           <div key={post.id} className="post-row">
             <div className="post-info">
-              <p style={{ fontWeight: 'bold', margin: '0 0 4px' }}>{post.title}</p>
-              <p style={{ fontSize: '12px', color: '#888', margin: '0 0 4px' }}>{post.created_at?.slice(0, 10)}</p>
-              <p style={{ fontSize: '13px', color: post.status === 'published' ? 'green' : '#aaa', margin: 0 }}>
+              <p className="post-title">{post.title}</p>
+              <p className="meta-text">{post.created_at?.slice(0, 10)}</p>
+              <p className={`post-status ${post.status === 'published' ? 'published' : 'draft'}`}>
                 {post.status === 'published' ? 'Published' : 'Draft'}
               </p>
             </div>
             <div className="post-actions">
-              <button onClick={() => navigate(`/blog/preview/${post.id}`)} style={{ ...btnStyle, fontSize: '14px' }}>Preview</button>
-              <button onClick={() => toggle(post)} style={{ ...btnStyle, fontSize: '14px', whiteSpace: 'nowrap' }}>
+              <button onClick={() => navigate(`/blog/preview/${post.id}`)} className="btn btn-sm">Preview</button>
+              <button onClick={() => toggle(post)} className="btn btn-sm">
                 {post.status === 'published' ? 'Unpublish' : 'Publish'}
               </button>
             </div>
@@ -358,24 +330,14 @@ export default function Admin() {
   if (!adminKey) return <Login onLogin={setAdminKey} />;
 
   return (
-    <div style={{ padding: '32px 24px' }}>
+    <div className="admin-page">
       <div className="admin-header">
         <div className="admin-tabs">
           {tabs.map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              style={{
-                ...btnStyle,
-                fontWeight: tab === t ? 'bold' : 'normal',
-                background: 'none',
-                border: 'none',
-                borderBottom: tab === t ? '2px solid black' : '2px solid transparent',
-                cursor: 'pointer',
-                padding: '4px 0',
-                marginRight: '16px',
-                fontSize: '16px',
-              }}
+              className={`tab-btn ${tab === t ? 'active' : ''}`}
             >
               {t}
             </button>

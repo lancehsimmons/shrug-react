@@ -1,5 +1,6 @@
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useState } from "react";
+import "./BuyButton.css";
 
 function BuyFileButton({ price, title, releaseId }) {
   const [signedUrl, setSignedUrl] = useState(null);
@@ -8,7 +9,7 @@ function BuyFileButton({ price, title, releaseId }) {
   if (signedUrl) {
     return (
       <div>
-        <p style={{color:"red", fontWeight:"bold"}}>Thanks for buying {title}!</p>
+        <p className="buy-confirmation">Thanks for buying {title}!</p>
         <a href={signedUrl} download>Download {title}</a>
       </div>
     );
@@ -41,7 +42,7 @@ function BuyFileButton({ price, title, releaseId }) {
           }
         }}
       />
-      {error && <p style={{ color: "red", marginTop: "8px" }}>{error}</p>}
+      {error && <p className="buy-error">{error}</p>}
     </div>
   );
 }

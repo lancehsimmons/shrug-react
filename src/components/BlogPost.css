@@ -1,0 +1,38 @@
+.blog-post {
+  max-width: 640px;
+  margin: 0 auto 48px;
+  text-align: left;
+}
+
+.blog-post-title {
+  margin: 0 0 4px;
+}
+
+.blog-post-date {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 16px;
+}
+
+.blog-post-images {
+  margin: 16px 0;
+}
+
+.blog-post-image {
+  max-width: 100%;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.blog-post-body {
+  white-space: pre-wrap;
+  margin: 0 0 16px;
+}
+
+.blog-post-audio-list {
+  padding-left: 20px;
+}
+
+.blog-post-audio-item {
+  margin-bottom: 8px;
+}

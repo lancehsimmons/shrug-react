@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import BlogPost from './BlogPost.js';
+import './Blog.css';
 
 export default function BlogPreview() {
   const { id } = useParams();
@@ -22,13 +23,13 @@ export default function BlogPreview() {
   }, [id]);
 
   return (
-    <div style={{ padding: '32px 24px' }}>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div className="blog-page">
+      {error && <p className="blog-preview-error">{error}</p>}
       {!post && !error && <p>Loading...</p>}
       {post && (
         <>
           {post.status === 'draft' && (
-            <p style={{ marginBottom: '24px', fontStyle: 'italic', color: '#888' }}>Draft preview — not yet published</p>
+            <p className="blog-preview-draft-notice">Draft preview — not yet published</p>
           )}
           <BlogPost {...post} />
         </>

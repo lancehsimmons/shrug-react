@@ -1,8 +1,50 @@
 .release-card {
-  width: 300px; 
-  border: 1px solid black; 
+  width: 300px;
+  border: 1px solid black;
   padding: 16px;
-  margin-top: 30px 
+  margin-top: 30px
+}
+
+.release-title {
+  margin: 0;
+  text-align: left;
+}
+
+.release-images {
+  margin: 8px 0;
+}
+
+.release-section {
+  margin-top: 16px;
+}
+
+.track-heading {
+  margin: 0 0 4px;
+  font-weight: bold;
+}
+
+.track-list {
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+
+.track-list--last {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.release-samples-heading {
+  margin: 16px 0 8px;
+  font-weight: bold;
+}
+
+.release-subheading {
+  margin: 0 0 8px;
+  font-weight: bold;
+}
+
+.sold-out {
+  font-weight: bold;
 }
 
 .artist {

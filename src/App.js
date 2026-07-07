@@ -14,10 +14,10 @@ function App() {
           <div>
             <h1>¯\_(ツ)_/¯</h1>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", marginLeft: "8px" }}>
-            <p style={{ fontSize: "18px" }}>Shrug is a private press</p>
-            <p style={{ fontSize: "18px" }}>for the Holocene Epoch</p>
-            <p style={{ fontSize: "14px" }}>¯\_(ツ)_/¯¯\_(ツ)_/¯¯\_(ツ)_/¯</p>
+          <div className="App-tagline">
+            <p className="App-tagline-primary">Shrug is a private press</p>
+            <p className="App-tagline-primary">for the Holocene Epoch</p>
+            <p className="App-tagline-secondary">¯\_(ツ)_/¯¯\_(ツ)_/¯¯\_(ツ)_/¯</p>
           </div>
           <nav className="App-nav">
             <NavLink to="/" end className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>Press</NavLink>

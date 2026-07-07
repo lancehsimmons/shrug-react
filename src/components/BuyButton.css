@@ -1,0 +1,9 @@
+.buy-confirmation {
+  color: red;
+  font-weight: bold;
+}
+
+.buy-error {
+  color: red;
+  margin-top: 8px;
+}

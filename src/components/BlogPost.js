@@ -1,22 +1,24 @@
+import './BlogPost.css';
+
 export default function BlogPost({ title, body, image_urls, audio_urls, created_at }) {
   return (
-    <div style={{ maxWidth: 640, margin: "0 auto 48px", textAlign: "left" }}>
-      <h2 style={{ margin: "0 0 4px" }}>{title}</h2>
-      <p style={{ fontSize: "14px", color: "#666", margin: "0 0 16px" }}>
+    <div className="blog-post">
+      <h2 className="blog-post-title">{title}</h2>
+      <p className="blog-post-date">
         {new Date(created_at).toLocaleDateString()}
       </p>
       {image_urls.length > 0 && (
-        <div style={{ margin: "16px 0" }}>
+        <div className="blog-post-images">
           {image_urls.map((url, i) => (
-            <img key={i} src={url} alt="" style={{ maxWidth: "100%", display: "block", marginBottom: "8px" }} />
+            <img key={i} src={url} alt="" className="blog-post-image" />
           ))}
         </div>
       )}
-      <p style={{ whiteSpace: "pre-wrap", margin: "0 0 16px" }}>{body}</p>
+      <p className="blog-post-body">{body}</p>
       {audio_urls.length > 0 && (
-        <ul style={{ paddingLeft: 20 }}>
+        <ul className="blog-post-audio-list">
           {audio_urls.map((url, i) => (
-            <li key={i} style={{ marginBottom: "8px" }}>
+            <li key={i} className="blog-post-audio-item">
               <audio src={url} controls />
             </li>
           ))}

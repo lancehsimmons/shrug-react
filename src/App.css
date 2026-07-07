@@ -49,6 +49,20 @@
   align-items: center;
 }
 
+.App-tagline {
+  display: flex;
+  flex-direction: column;
+  margin-left: 8px;
+}
+
+.App-tagline-primary {
+  font-size: 18px;
+}
+
+.App-tagline-secondary {
+  font-size: 14px;
+}
+
 .nav-link {
   font-size: 18px;
   color: black;

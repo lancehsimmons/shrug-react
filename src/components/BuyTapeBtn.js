@@ -1,11 +1,12 @@
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useState } from "react";
+import "./BuyButton.css";
 
 function BuyButton({ price, title, releaseId }) {
   const [purchased, setPurchased] = useState(false);
 
   if (purchased) {
-    return <p style={{color:"red", fontWeight:"bold"}}>Thanks for buying {title}!</p>;
+    return <p className="buy-confirmation">Thanks for buying {title}!</p>;
   }
 
   return (

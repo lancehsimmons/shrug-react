@@ -1,0 +1,13 @@
+.blog-page {
+  padding: 32px 24px;
+}
+
+.blog-preview-error {
+  color: red;
+}
+
+.blog-preview-draft-notice {
+  margin-bottom: 24px;
+  font-style: italic;
+  color: #888;
+}

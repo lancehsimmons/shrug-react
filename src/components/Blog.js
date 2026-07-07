@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import BlogPost from './BlogPost.js';
+import './Blog.css';
 
 export default function Blog() {
   const [posts, setPosts] = useState([]);
@@ -11,7 +12,7 @@ export default function Blog() {
   }, []);
 
   return (
-    <div style={{ padding: "32px 24px" }}>
+    <div className="blog-page">
       {posts.length === 0 ? (
         <p>No posts yet.</p>
       ) : (
