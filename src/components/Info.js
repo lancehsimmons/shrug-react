@@ -9,7 +9,7 @@ const SECTIONS = [
   {
     id: 'shipping',
     title: 'Shipping',
-    body: 'current shipping costs only include USA. If you would like to order elsewhere in the world please get in touch. Physical media should generally ship within a week unless otherwise noted. Media-mail is the default shipping mode which can also take extra time. As stated, Shrug is a private endeavor so please allow for a loose shipping timeframe.',
+    body: 'Current shipping costs only include USA. If you would like to order elsewhere in the world please get in touch. Physical media should generally ship within a week unless otherwise noted. Media-mail is the default shipping mode which can also take extra time. As stated, Shrug is a private endeavor so please allow for a loose shipping timeframe.',
   },
   {
     id: 'legal',
