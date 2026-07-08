@@ -8,7 +8,7 @@ function BuyFileButton({ price, title, releaseId }) {
 
   if (signedUrl) {
     return (
-      <div>
+      <div className="buy-conf-container">
         <p className="buy-confirmation">Thanks for buying {title}!</p>
         <a href={signedUrl} download>Download {title}</a>
       </div>
