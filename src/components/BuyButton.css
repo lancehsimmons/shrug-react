@@ -7,11 +7,11 @@
   color: red;
   margin: 8px;
   padding: 18px;
-  border: 1px solid black;
+  border: 1px solid red;
 }
 
 .buy-conf-container {
   margin: 8px;
-  border: 1px solid black;
+  border: 1px solid red;
   padding: 18px
 }
