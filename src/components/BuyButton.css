@@ -5,11 +5,13 @@
 
 .buy-error {
   color: red;
-  margin-top: 8px;
+  margin: 8px;
+  padding: 18px;
+  border: 1px solid black;
 }
 
 .buy-conf-container {
-  margin: 16px;
+  margin: 8px;
   border: 1px solid black;
   padding: 18px
 }
