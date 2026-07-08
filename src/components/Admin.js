@@ -398,7 +398,7 @@ function AddPost({ adminKey }) {
         <Field label="Title *">
           <input required className="field-input" value={form.title} onChange={set('title')} placeholder='e.g. "New Release Announcement"' />
         </Field>
-        <Field label="Body *" hint="Plain text; line breaks are preserved">
+        <Field label="Body *" hint="Plain text; line breaks are preserved. Use [text](url) to add a link.">
           <textarea required rows={8} className="field-input" value={form.body} onChange={set('body')} placeholder="Write your post here..." />
         </Field>
         <Field label="Image URLs" hint="One image URL per line">
@@ -458,7 +458,7 @@ function EditPost({ post, adminKey, onCancel, onSaved }) {
         <Field label="Title *">
           <input required className="field-input" value={form.title} onChange={set('title')} />
         </Field>
-        <Field label="Body *" hint="Plain text; line breaks are preserved">
+        <Field label="Body *" hint="Plain text; line breaks are preserved. Use [text](url) to add a link.">
           <textarea required rows={8} className="field-input" value={form.body} onChange={set('body')} />
         </Field>
         <Field label="Image URLs" hint="One image URL per line">
