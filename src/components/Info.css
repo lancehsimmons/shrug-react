@@ -1,0 +1,23 @@
+.info-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  text-align: left;
+}
+
+.info-intro {
+  margin: 16px 0px 32px;
+}
+
+.info-section {
+  margin-bottom: 32px;
+}
+
+.info-section-title {
+  margin: 0 0 8px;
+}
+
+.info-section-body {
+  white-space: pre-wrap;
+  margin: 0;
+}

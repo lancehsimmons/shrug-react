@@ -5,6 +5,7 @@ import Releaselist from './components/Releaselist.js';
 import Blog from './components/Blog.js';
 import Admin from './components/Admin.js';
 import BlogPreview from './components/BlogPreview.js';
+import Info from './components/Info.js';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <nav className="App-nav">
             <NavLink to="/" end className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>Press</NavLink>
             <NavLink to="/blog" className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>Blog</NavLink>
+            <NavLink to="/info" className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>Info</NavLink>
           </nav>
         </header>
         <Routes>
@@ -31,6 +33,7 @@ function App() {
             </PayPalScriptProvider>
           } />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/info" element={<Info />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/blog/preview/:id" element={<BlogPreview />} />
         </Routes>

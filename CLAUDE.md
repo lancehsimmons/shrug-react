@@ -7,7 +7,7 @@ A React storefront for Unguent music releases. Displays release cards with metad
 ## Tech stack
 
 - React 19 (`.js` file extensions, not `.jsx`)
-- `react-router-dom` v6 for client-side routing (`/` Press, `/blog`, `/admin`)
+- `react-router-dom` v6 for client-side routing (`/` Press, `/blog`, `/info`, `/admin`)
 - Node.js + Express server in `server/`
 - `better-sqlite3` for synchronous SQLite
 - PayPal Orders v2 REST API (sandbox credentials in `server/.env`)
@@ -40,6 +40,7 @@ shrug-react/
 │   │   ├── Blog.js         — Fetches published posts from API, renders list
 │   │   ├── BlogPost.js     — Individual post (title, date, images, body, audio)
 │   │   ├── BlogPreview.js  — Renders a single post (draft or published) at /blog/preview/:id using admin key
+│   │   ├── Info.js         — Static info page at /info; renders a SECTIONS array (Contact, Shipping, Legal) — add entries to add sections
 │   │   └── Admin.js        — Admin dashboard at /admin; tabs for Orders / Posts / Add Release / Add Post
 │   ├── utils/
 │   │   └── linkify.js      — renderBodyWithLinks(body) parses Markdown-style [text](url) links in post bodies
@@ -108,6 +109,7 @@ R2_BUCKET_NAME=
 - Signed URLs are generated server-side using `@aws-sdk/s3-request-presigner` with the R2 S3-compatible endpoint — no AWS infrastructure involved
 - Blog posts are created as drafts; use the Posts tab in `/admin` to preview and publish
 - Post bodies support Markdown-style links (`[text](url)`) — `BlogPost.js` renders them via `renderBodyWithLinks` in `src/utils/linkify.js`; plain body text is otherwise rendered as-is (no other Markdown syntax is supported)
+- `Info.js` is static (no database table, not admin-editable) — content lives in a `SECTIONS` array in the component; edit that array directly to change copy or add sections
 
 ## Before deployment
 
