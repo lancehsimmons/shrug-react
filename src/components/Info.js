@@ -14,14 +14,14 @@ const SECTIONS = [
   {
     id: 'legal',
     title: 'Legal',
-    body: 'Unless otherwise stated, including information external to this site, all content is private copyright of the owner and operator.',
+    body: 'Unless otherwise stated, including relevant information external to this site, all content is private copyright of the owner and operator.',
   },
 ];
 
 export default function Info() {
   return (
     <div className="info-page">
-      <div className="info-intro">Shrug is a private entity providing access to independent sound forms. We will try to serve this objective as best we can. Shrug is neither a functioning business nor a unit of corporate production (though some corporate portals are utilized in achieving our objective). Please procede with discretion</div>
+      <div className="info-intro">Shrug is a private entity providing access to independent sound forms. We will try to serve this objective as best we can. Shrug is neither a functioning business nor a unit of corporate production (though some corporate portals are utilized in achieving our objective). Please procede with discretion.</div>
       {SECTIONS.map(section => (
         <section key={section.id} className="info-section">
           <h2 className="info-section-title">{section.title}</h2>
