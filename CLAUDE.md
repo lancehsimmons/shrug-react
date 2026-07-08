@@ -41,6 +41,8 @@ shrug-react/
 │   │   ├── BlogPost.js     — Individual post (title, date, images, body, audio)
 │   │   ├── BlogPreview.js  — Renders a single post (draft or published) at /blog/preview/:id using admin key
 │   │   └── Admin.js        — Admin dashboard at /admin; tabs for Orders / Posts / Add Release / Add Post
+│   ├── utils/
+│   │   └── linkify.js      — renderBodyWithLinks(body) parses Markdown-style [text](url) links in post bodies
 │   └── assets/
 │       └── releases.json   — Legacy data file, no longer used for rendering
 └── public/
@@ -105,6 +107,7 @@ R2_BUCKET_NAME=
 - `download_url` stores the R2 object key only (e.g. `Release-Name.zip`); the capture route uses it with `R2_BUCKET_NAME` to generate a 1-hour signed URL returned in the capture response
 - Signed URLs are generated server-side using `@aws-sdk/s3-request-presigner` with the R2 S3-compatible endpoint — no AWS infrastructure involved
 - Blog posts are created as drafts; use the Posts tab in `/admin` to preview and publish
+- Post bodies support Markdown-style links (`[text](url)`) — `BlogPost.js` renders them via `renderBodyWithLinks` in `src/utils/linkify.js`; plain body text is otherwise rendered as-is (no other Markdown syntax is supported)
 
 ## Before deployment
 

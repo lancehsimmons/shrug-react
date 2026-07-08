@@ -1,3 +1,4 @@
+import { renderBodyWithLinks } from '../utils/linkify.js';
 import './BlogPost.css';
 
 export default function BlogPost({ title, body, image_urls, audio_urls, created_at }) {
@@ -14,7 +15,7 @@ export default function BlogPost({ title, body, image_urls, audio_urls, created_
           ))}
         </div>
       )}
-      <p className="blog-post-body">{body}</p>
+      <p className="blog-post-body">{renderBodyWithLinks(body)}</p>
       {audio_urls.length > 0 && (
         <ul className="blog-post-audio-list">
           {audio_urls.map((url, i) => (
