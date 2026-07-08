@@ -113,7 +113,6 @@ R2_BUCKET_NAME=
 
 ## Before deployment
 
-- Remove "soiled top spin" from `server/seed.js` — only the Unguent "Structured Water" release should be live
 - Switch `PAYPAL_ENV` to `live` and update PayPal credentials
 - Disable the R2 public development URL on the `shrugfiles` bucket so files are only accessible via signed URLs
 

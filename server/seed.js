@@ -21,26 +21,6 @@ const releases = [
     fileprice: 6.00,
     stock: 12,
   },
-  {
-    id: 2,
-    title: 'soiled top spin',
-    artist: 'Unguent',
-    date: '6.26',
-    time: null,
-    side_a: JSON.stringify(['Theory of Disinformation II', 'Re-Equivalence']),
-    side_b: JSON.stringify(['ZnCO₃ + TiO₂ + K₂O']),
-    notes: '',
-    sample_urls: JSON.stringify([
-      'https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/disinfo_thry_samp.wav',
-      'https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/re_equivalence_samp.wav',
-      'https://pub-bdc04cdfbec64e10b751e2f08bc7ad5f.r2.dev/ZnCO%E2%82%83%2BTiO%E2%82%82%2BK%E2%82%82O_samp.wav',
-    ]),
-    download_url: null,
-    images: JSON.stringify([]),
-    physprice: 15.00,
-    fileprice: 6.00,
-    stock: 6,
-  },
 ];
 
 const insert = db.prepare(`
