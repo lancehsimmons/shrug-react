@@ -36,12 +36,14 @@ router.post('/', async (req, res) => {
 
     const release = db.prepare('SELECT * FROM releases WHERE id = ?').get(Number(release_id));
 
-    const update = db.prepare(
-      'UPDATE releases SET stock = stock - 1 WHERE id = ? AND stock > 0'
-    ).run(release_id);
+    if (purchase_type === 'physical') {
+      const update = db.prepare(
+        'UPDATE releases SET stock = stock - 1 WHERE id = ? AND stock > 0'
+      ).run(release_id);
 
-    if (update.changes === 0) {
-      return res.status(409).json({ error: 'Sold out — stock was exhausted before capture completed' });
+      if (update.changes === 0) {
+        return res.status(409).json({ error: 'Sold out — stock was exhausted before capture completed' });
+      }
     }
 
     const record = db.prepare(`

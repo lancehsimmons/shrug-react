@@ -99,8 +99,8 @@ R2_BUCKET_NAME=
 
 ## Key design decisions
 
-- Stock only decrements on a successful capture — never on order creation
-- `UPDATE releases SET stock = stock - 1 WHERE id = ? AND stock > 0` is the only true oversell guard
+- Stock only decrements on a successful capture — never on order creation, and only for `physical` purchases; digital stock is unlimited, so digital captures never touch the `stock` column
+- `UPDATE releases SET stock = stock - 1 WHERE id = ? AND stock > 0` is the only true oversell guard, and only runs when `purchase_type === 'physical'`
 - `purchase_type` (`physical` or `digital`) is set by the buy button and encoded into PayPal's `custom_id` field at order creation — the capture route reads it back from there
 - `Releaselist.js` maps snake_case API fields (`side_a`, `side_b`, `sample_urls`, `download_url`) to camelCase props (`sideA`, `sideB`, `samples`, `downloadUrl`) expected by `Release.js`
 - `Release.js` conditionally renders Side A/B headings — omits them when arrays are empty; uses "Tracks" instead of "Side A" when there is no Side B
