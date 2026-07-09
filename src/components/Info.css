@@ -21,3 +21,8 @@
   white-space: pre-wrap;
   margin: 0;
 }
+
+.info-email {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
