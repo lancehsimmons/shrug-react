@@ -1,5 +1,6 @@
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useState } from "react";
+import { API_BASE_URL } from '../config.js';
 import "./BuyButton.css";
 
 function BuyFileButton({ price, title, releaseId }) {
@@ -21,7 +22,7 @@ function BuyFileButton({ price, title, releaseId }) {
         fundingSource="paypal"
         style={{ layout: "horizontal", height: 35, label: "buynow" }}
         createOrder={async () => {
-          const res = await fetch("http://localhost:4000/api/orders", {
+          const res = await fetch(`${API_BASE_URL}/api/orders`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ releaseId, purchase_type: "digital" }),
@@ -30,7 +31,7 @@ function BuyFileButton({ price, title, releaseId }) {
           return order.orderID;
         }}
         onApprove={async (data) => {
-          const res = await fetch(`http://localhost:4000/api/orders/${data.orderID}/capture`, {
+          const res = await fetch(`${API_BASE_URL}/api/orders/${data.orderID}/capture`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
           });

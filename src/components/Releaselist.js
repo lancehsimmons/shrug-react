@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import Release from './Release.js';
+import { API_BASE_URL } from '../config.js';
 
 function ReleaseList() {
   const [releases, setReleases] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/releases")
+    fetch(`${API_BASE_URL}/api/releases`)
       .then((res) => res.json())
       .then((data) => {
         setReleases(data.map((r) => ({

@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import BlogPost from './BlogPost.js';
+import { API_BASE_URL } from '../config.js';
 import './Blog.css';
 
 export default function Blog() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/posts')
+    fetch(`${API_BASE_URL}/api/posts`)
       .then(r => r.json())
       .then(setPosts);
   }, []);

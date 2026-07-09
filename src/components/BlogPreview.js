@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import BlogPost from './BlogPost.js';
+import { API_BASE_URL } from '../config.js';
 import './Blog.css';
 
 export default function BlogPreview() {
@@ -14,7 +15,7 @@ export default function BlogPreview() {
       setError('Not logged in — visit /admin first.');
       return;
     }
-    fetch(`http://localhost:4000/api/posts/${id}`, {
+    fetch(`${API_BASE_URL}/api/posts/${id}`, {
       headers: { 'x-admin-key': adminKey },
     })
       .then(r => r.ok ? r.json() : Promise.reject())

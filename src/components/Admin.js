@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL as API } from '../config.js';
 import './Admin.css';
-
-const API = 'http://localhost:4000';
 
 function Field({ label, hint, children }) {
   return (
