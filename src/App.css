@@ -7,12 +7,6 @@
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: white;
   min-height: 10vh;
@@ -24,18 +18,6 @@
   font-size: calc(10px + 2vmin);
   color: black;
   padding: 3vh
-}
-
-@media (max-width: 600px) {
-  .App-header {
-    flex-direction: column;
-  }
-
-  .App-nav {
-    margin-left: 0;
-    justify-content: center;
-    margin-top: 12px;
-  }
 }
 
 .App-link {
@@ -78,7 +60,6 @@
 }
 
 .release-list {
-  /* padding: 32px 24px; */
   max-width: 640px;
   margin: 0 auto 48px;
   text-align: left;
@@ -90,4 +71,16 @@ p {
 
 h1 {
   margin: 0
+}
+
+@media (max-width: 600px) {
+  .App-header {
+    flex-direction: column;
+  }
+
+  .App-nav {
+    margin-left: 0px;
+    justify-content: center;
+    margin-top: 12px;
+  }
 }
