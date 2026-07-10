@@ -9,6 +9,8 @@ const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000').spli
 app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
+app.get('/api/health', (req, res) => res.send('ok'));
+
 app.use('/api/releases', require('./routes/releases'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/orders/:orderID/capture', require('./routes/capture'));

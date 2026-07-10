@@ -70,6 +70,7 @@ Server runs on port 4000. React dev server proxies to it.
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
+| GET | `/api/health` | public | Health check — returns `200 ok`; polled by process manager and uptime monitoring |
 | GET | `/api/releases` | public | All releases with parsed JSON columns |
 | POST | `/api/releases` | `x-admin-key` | Add a new release |
 | PUT | `/api/releases/:id` | `x-admin-key` | Update a release's fields (title, artist, date, prices, stock, tracks, notes, urls) |
