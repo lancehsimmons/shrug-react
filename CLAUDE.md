@@ -116,6 +116,7 @@ CORS_ORIGIN=          # production only — comma-separated allowed origins; uns
 ## Before deployment
 
 - Set `CORS_ORIGIN` to the production frontend origin(s) — CORS is locked to that list (defaults to `http://localhost:3000` when unset)
+- Generate a fresh `ADMIN_KEY` for the production `.env` (`openssl rand -hex 32`) — never reuse the local dev key
 - Switch `PAYPAL_ENV` to `live` and update PayPal credentials
 - Disable the R2 public development URL on the `shrugfiles` bucket so files are only accessible via signed URLs
 
