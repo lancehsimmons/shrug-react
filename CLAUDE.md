@@ -95,6 +95,7 @@ R2_ACCOUNT_ID=
 R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=
 R2_BUCKET_NAME=
+CORS_ORIGIN=          # production only — comma-separated allowed origins; unset defaults to http://localhost:3000
 ```
 
 ## Key design decisions
@@ -113,6 +114,7 @@ R2_BUCKET_NAME=
 
 ## Before deployment
 
+- Set `CORS_ORIGIN` to the production frontend origin(s) — CORS is locked to that list (defaults to `http://localhost:3000` when unset)
 - Switch `PAYPAL_ENV` to `live` and update PayPal credentials
 - Disable the R2 public development URL on the `shrugfiles` bucket so files are only accessible via signed URLs
 

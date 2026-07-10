@@ -5,7 +5,8 @@ require('./db');
 require('./seed');
 
 const app = express();
-app.use(cors());
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000').split(',');
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
 app.use('/api/releases', require('./routes/releases'));
