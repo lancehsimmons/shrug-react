@@ -113,6 +113,16 @@ CORS_ORIGIN=          # production only — comma-separated allowed origins; uns
 - Post bodies support Markdown-style links (`[text](url)`) — `BlogPost.js` renders them via `renderBodyWithLinks` in `src/utils/linkify.js`; plain body text is otherwise rendered as-is (no other Markdown syntax is supported)
 - `Info.js` is static (no database table, not admin-editable) — content lives in a `SECTIONS` array in the component; edit that array directly to change copy or add sections
 
+## Deployment status (as of 2026-07-10)
+
+Working through `/Users/lancesimmons/dev/shrug/DEPLOYMENT_PLAN.md`. Phase 1 (code changes) is complete.
+Phase 2 is in progress and paused here: **`shrug.wtf` is registered at Porkbun** and added to Cloudflare
+(free plan), but the nameserver switch hasn't reached the registry — a direct query of the `.wtf` TLD
+servers still shows Porkbun's nameservers, meaning the change likely didn't save on Porkbun's side.
+Next step: in Porkbun's Domain Management, confirm the **Authoritative Nameservers** field (not DNS
+records) lists the two Cloudflare nameservers and was submitted, then re-check delegation
+(`dig +short NS shrug.wtf @1.1.1.1`) and wait for Cloudflare to flip the zone to Active.
+
 ## Before deployment
 
 - Set `CORS_ORIGIN` to the production frontend origin(s) — CORS is locked to that list (defaults to `http://localhost:3000` when unset)
