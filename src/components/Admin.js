@@ -63,19 +63,25 @@ function formatAddress(raw) {
   }
 }
 
-function Orders({ adminKey }) {
+function Orders({ adminKey, onAuthError }) {
   const [orders, setOrders] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetch(`${API}/api/orders`, { headers: { 'x-admin-key': adminKey } })
-      .then(r => r.json())
-      .then(setOrders);
-  }, [adminKey]);
+      .then(async res => {
+        if (res.status === 401) return onAuthError();
+        if (!res.ok) return setError('Failed to load orders.');
+        setOrders(await res.json());
+      });
+  }, [adminKey, onAuthError]);
 
   return (
     <div className="orders-section">
       <h2 className="section-heading">Orders</h2>
-      {orders.length === 0 ? (
+      {error ? (
+        <p className="status-msg error">{error}</p>
+      ) : orders.length === 0 ? (
         <p>No orders yet.</p>
       ) : (
         <div className="table-scroll">
@@ -478,15 +484,19 @@ function EditPost({ post, adminKey, onCancel, onSaved }) {
 
 // ── Posts ─────────────────────────────────────────────────────────────────────
 
-function Posts({ adminKey }) {
+function Posts({ adminKey, onAuthError }) {
   const [posts, setPosts] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   function load() {
     fetch(`${API}/api/posts/all`, { headers: { 'x-admin-key': adminKey } })
-      .then(r => r.json())
-      .then(setPosts);
+      .then(async res => {
+        if (res.status === 401) return onAuthError();
+        if (!res.ok) return setError('Failed to load posts.');
+        setPosts(await res.json());
+      });
   }
 
   useEffect(() => { load(); }, [adminKey]);
@@ -515,7 +525,9 @@ function Posts({ adminKey }) {
   return (
     <div className="admin-section">
       <h2 className="section-heading">Posts</h2>
-      {posts.length === 0 ? (
+      {error ? (
+        <p className="status-msg error">{error}</p>
+      ) : posts.length === 0 ? (
         <p>No posts yet.</p>
       ) : (
         posts.map(post => (
@@ -572,9 +584,9 @@ export default function Admin() {
         </div>
         <button onClick={logout} className="admin-logout">Log out</button>
       </div>
-      {tab === 'Orders' && <Orders adminKey={adminKey} />}
+      {tab === 'Orders' && <Orders adminKey={adminKey} onAuthError={logout} />}
       {tab === 'Releases' && <Releases adminKey={adminKey} />}
-      {tab === 'Posts' && <Posts adminKey={adminKey} />}
+      {tab === 'Posts' && <Posts adminKey={adminKey} onAuthError={logout} />}
       {tab === 'Add Release' && <AddRelease adminKey={adminKey} />}
       {tab === 'Add Post' && <AddPost adminKey={adminKey} />}
     </div>
