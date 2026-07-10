@@ -8,7 +8,7 @@ export default function Info() {
       <section className="info-section">
         <h2 className="info-section-title">Contact</h2>
         <div className="info-email">info@shrug.huh</div>
-        <p className="info-section-body">Do get in touch if you run into any issues with placing orders either physical or digital or if you have not received anything you purchased. We are currently not open for submissions.</p>
+        <p className="info-section-body">Please get in touch if you run into any issues with placing orders both physical and digital or if you have not received anything you purchased. We are currently not open for submissions.</p>
       </section>
 
       <section className="info-section">
