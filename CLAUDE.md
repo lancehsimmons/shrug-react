@@ -113,15 +113,20 @@ CORS_ORIGIN=          # production only — comma-separated allowed origins; uns
 - Post bodies support Markdown-style links (`[text](url)`) — `BlogPost.js` renders them via `renderBodyWithLinks` in `src/utils/linkify.js`; plain body text is otherwise rendered as-is (no other Markdown syntax is supported)
 - `Info.js` is static (no database table, not admin-editable) — content lives in a `SECTIONS` array in the component; edit that array directly to change copy or add sections
 
-## Deployment status (as of 2026-07-10)
+## Deployment status (as of 2026-07-13)
 
-Working through `/Users/lancesimmons/dev/shrug/DEPLOYMENT_PLAN.md`. Phase 1 (code changes) is complete.
-Phase 2 is in progress and paused here: **`shrug.wtf` is registered at Porkbun** and added to Cloudflare
-(free plan), but the nameserver switch hasn't reached the registry — a direct query of the `.wtf` TLD
-servers still shows Porkbun's nameservers, meaning the change likely didn't save on Porkbun's side.
-Next step: in Porkbun's Domain Management, confirm the **Authoritative Nameservers** field (not DNS
-records) lists the two Cloudflare nameservers and was submitted, then re-check delegation
-(`dig +short NS shrug.wtf @1.1.1.1`) and wait for Cloudflare to flip the zone to Active.
+Working through `/Users/lancesimmons/dev/shrug/DEPLOYMENT_PLAN.md`. Phases 1 (code changes) and 2
+(domain) are complete: `shrug.wtf` is registered at Porkbun and delegated to Cloudflare — the `.wtf`
+TLD servers return the two Cloudflare nameservers and Cloudflare answers authoritatively for the zone
+(Active). Phase 3 (email) is also complete: `info@shrug.wtf` is live on Zoho Mail free tier
+(webmail-only; MX/SPF/DKIM in Cloudflare DNS, inbound delivery confirmed), and `Info.js` now shows the
+real address. Phase 4 backend is **live at `https://api.shrug.wtf`**: Vultr $5/mo VPS at
+`104.238.128.155` (Hetzner ruled out after its June 2026 US price hike) — Ubuntu 26.04, ufw, Node 22,
+app at `/opt/shrug/app` under systemd (`shrug-api.service`, service user `shrug`), fresh prod
+`ADMIN_KEY` in the server's `.env`, Caddy reverse proxy with auto-renewing Let's Encrypt cert (api DNS
+record is deliberately grey-cloud/DNS-only). Deploys: rsync changed files + `systemctl restart
+shrug-api`. Next: frontend to Cloudflare Pages (needs the repo on GitHub), then Phase 5 root-domain
+DNS + rebuild with `REACT_APP_API_URL=https://api.shrug.wtf`.
 
 ## Before deployment
 
