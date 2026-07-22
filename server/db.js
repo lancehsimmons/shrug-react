@@ -15,7 +15,7 @@ db.exec(`
     sample_urls TEXT,
     download_url TEXT,
     images TEXT,
-    physprice REAL NOT NULL,
+    physprice REAL,
     fileprice REAL NOT NULL,
     stock INTEGER NOT NULL DEFAULT 0
   );

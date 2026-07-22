@@ -26,8 +26,8 @@ router.post('/', (req, res) => {
 
   const { title, artist, date, time, side_a, side_b, notes, sample_urls, images, physprice, fileprice, stock } = req.body;
 
-  if (!title || physprice == null || fileprice == null) {
-    return res.status(400).json({ error: 'title, physprice, and fileprice are required' });
+  if (!title || fileprice == null) {
+    return res.status(400).json({ error: 'title and fileprice are required' });
   }
 
   const result = db.prepare(`
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
     notes || '',
     JSON.stringify(sample_urls || []),
     JSON.stringify(images || []),
-    physprice,
+    physprice ?? null,
     fileprice,
     stock ?? 0
   );
@@ -62,8 +62,8 @@ router.put('/:id', (req, res) => {
 
   const { title, artist, date, time, side_a, side_b, notes, sample_urls, images, physprice, fileprice, stock, download_url } = req.body;
 
-  if (!title || physprice == null || fileprice == null) {
-    return res.status(400).json({ error: 'title, physprice, and fileprice are required' });
+  if (!title || fileprice == null) {
+    return res.status(400).json({ error: 'title and fileprice are required' });
   }
 
   db.prepare(`
@@ -80,7 +80,7 @@ router.put('/:id', (req, res) => {
     notes || '',
     JSON.stringify(sample_urls || []),
     JSON.stringify(images || []),
-    physprice,
+    physprice ?? null,
     fileprice,
     stock ?? 0,
     download_url || null,

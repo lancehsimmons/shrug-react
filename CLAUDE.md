@@ -52,7 +52,7 @@ shrug-react/
 
 ## Database schema
 
-Three tables: `releases`, `orders`, and `posts` — see `server/db.js` for full schema. JSON array columns (`side_a`, `side_b`, `sample_urls`, `images`, `image_urls`, `audio_urls`) are stored as JSON strings and parsed back into arrays in the API response. `download_url` stores the R2 object key (filename only, e.g. `Release-Name.zip`) — not a full URL. `posts.created_at` is set automatically by SQLite on insert. `posts.status` is `draft` or `published`; only published posts are returned by the public endpoint.
+Three tables: `releases`, `orders`, and `posts` — see `server/db.js` for full schema. JSON array columns (`side_a`, `side_b`, `sample_urls`, `images`, `image_urls`, `audio_urls`) are stored as JSON strings and parsed back into arrays in the API response. `download_url` stores the R2 object key (filename only, e.g. `Release-Name.zip`) — not a full URL. `posts.created_at` is set automatically by SQLite on insert. `posts.status` is `draft` or `published`; only published posts are returned by the public endpoint. `releases.physprice` is nullable — null means the release is digital-only (no physical edition).
 
 ## Running the project
 
@@ -106,6 +106,7 @@ CORS_ORIGIN=          # production only — comma-separated allowed origins; uns
 - `purchase_type` (`physical` or `digital`) is set by the buy button and encoded into PayPal's `custom_id` field at order creation — the capture route reads it back from there
 - `Releaselist.js` maps snake_case API fields (`side_a`, `side_b`, `sample_urls`, `download_url`) to camelCase props (`sideA`, `sideB`, `samples`, `downloadUrl`) expected by `Release.js`
 - `Release.js` conditionally renders Side A/B headings — omits them when arrays are empty; uses "Tracks" instead of "Side A" when there is no Side B
+- A null `physprice` means a release has no physical edition — `Release.js` omits the entire Physical Media block (price, buy button, SOLD OUT state) when `physprice` is null; the Add/Edit Release forms in `Admin.js` allow leaving Physical price and Stock blank (`physprice` is sent as `undefined`, `stock` defaults to `0`) to create one; the admin Releases list shows "Digital only" instead of a stock count for these
 - Admin dashboard at `/admin` is not linked in the main nav — navigate there directly; login validates the key against `GET /api/orders`
 - `download_url` stores the R2 object key only (e.g. `Release-Name.zip`); the capture route uses it with `R2_BUCKET_NAME` to generate a 1-hour signed URL returned in the capture response
 - Signed URLs are generated server-side using `@aws-sdk/s3-request-presigner` with the R2 S3-compatible endpoint — no AWS infrastructure involved
@@ -125,8 +126,11 @@ real address. Phase 4 backend is **live at `https://api.shrug.wtf`**: Vultr $5/m
 app at `/opt/shrug/app` under systemd (`shrug-api.service`, service user `shrug`), fresh prod
 `ADMIN_KEY` in the server's `.env`, Caddy reverse proxy with auto-renewing Let's Encrypt cert (api DNS
 record is deliberately grey-cloud/DNS-only). Deploys: rsync changed files + `systemctl restart
-shrug-api`. Next: frontend to Cloudflare Pages (needs the repo on GitHub), then Phase 5 root-domain
-DNS + rebuild with `REACT_APP_API_URL=https://api.shrug.wtf`.
+shrug-api`. Frontend is on Cloudflare Pages at `https://shrug-react.pages.dev` (production branch:
+`production` — promote via `git push origin main:production`; build env: `REACT_APP_API_URL=
+https://api.shrug.wtf`, `CI=false`). Server CORS allows shrug.wtf, www, and the pages.dev origin.
+Next: attach custom domain `shrug.wtf` (+ www) to the Pages project, then Phase 6 (PayPal sandbox
+shakedown → live flip) and Phase 7 (backups, uptime monitoring).
 
 ## Before deployment
 
@@ -134,6 +138,12 @@ DNS + rebuild with `REACT_APP_API_URL=https://api.shrug.wtf`.
 - Generate a fresh `ADMIN_KEY` for the production `.env` (`openssl rand -hex 32`) — never reuse the local dev key
 - Switch `PAYPAL_ENV` to `live` and update PayPal credentials
 - Disable the R2 public development URL on the `shrugfiles` bucket so files are only accessible via signed URLs
+
+## To do
+
+- **Support digital-only releases** (no physical edition) — dev-side is done and verified working (schema, API, `Release.js` rendering, admin forms — see Key design decisions above). Still outstanding:
+  - Migrate the **production** database on the VPS — the existing `releases` table has `NOT NULL` baked in and `CREATE TABLE IF NOT EXISTS` won't alter it; SQLite can't drop a NOT NULL constraint via `ALTER TABLE`, so rebuild the table: back up the `.db` file, create a new table with the relaxed schema, copy rows over, drop the old table, rename the new one into place (one-time script run on the server, then `systemctl restart shrug-api`) — this is the same rebuild already done against the local dev `store.db`
+    - Pre-launch shortcut: while prod data is still disposable (sandbox-only orders, no real posts/edits worth keeping), skip the rebuild — stop `shrug-api`, move `store.db` aside as a backup, deploy the updated `db.js`, and restart; tables are recreated from scratch and `seed.js` re-inserts the release. Loses all orders, posts, and admin edits — not an option once PayPal is live
 
 ## Working preferences
 

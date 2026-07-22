@@ -140,9 +140,9 @@ function AddRelease({ adminKey }) {
       title: form.title,
       artist: form.artist || undefined,
       date: form.date || undefined,
-      physprice: parseFloat(form.physprice),
+      physprice: form.physprice === '' ? undefined : parseFloat(form.physprice),
       fileprice: parseFloat(form.fileprice),
-      stock: parseInt(form.stock, 10),
+      stock: form.stock === '' ? 0 : parseInt(form.stock, 10),
       notes: form.notes || undefined,
       side_a: form.side_a.split('\n').map(s => s.trim()).filter(Boolean),
       side_b: form.side_b.split('\n').map(s => s.trim()).filter(Boolean),
@@ -177,14 +177,14 @@ function AddRelease({ adminKey }) {
         <Field label="Date" hint="Short date label shown on the card">
           <input className="field-input" value={form.date} onChange={set('date')} placeholder='e.g. "6.26"' />
         </Field>
-        <Field label="Physical price *" hint="USD, e.g. 15.00">
-          <input required type="number" min="0" step="0.01" className="field-input" value={form.physprice} onChange={set('physprice')} placeholder="15.00" />
+        <Field label="Physical price" hint="USD, e.g. 15.00 — leave blank for a digital-only release">
+          <input type="number" min="0" step="0.01" className="field-input" value={form.physprice} onChange={set('physprice')} placeholder="15.00" />
         </Field>
         <Field label="File price *" hint="USD, e.g. 6.00">
           <input required type="number" min="0" step="0.01" className="field-input" value={form.fileprice} onChange={set('fileprice')} placeholder="6.00" />
         </Field>
-        <Field label="Stock *" hint="Number of physical copies available">
-          <input required type="number" min="0" step="1" className="field-input" value={form.stock} onChange={set('stock')} placeholder="10" />
+        <Field label="Stock" hint="Number of physical copies available — leave blank if no physical edition">
+          <input type="number" min="0" step="1" className="field-input" value={form.stock} onChange={set('stock')} placeholder="10" />
         </Field>
         <Field label="Side A tracks" hint="One track title per line">
           <textarea rows={4} className="field-input" value={form.side_a} onChange={set('side_a')} placeholder={"Theory of Disinformation II\nRe-Equivalence"} />
@@ -218,7 +218,7 @@ function EditRelease({ release, adminKey, onCancel, onSaved }) {
     title: release.title || '',
     artist: release.artist || '',
     date: release.date || '',
-    physprice: String(release.physprice ?? ''),
+    physprice: release.physprice == null ? '' : String(release.physprice),
     fileprice: String(release.fileprice ?? ''),
     stock: String(release.stock ?? '0'),
     side_a: (release.side_a || []).join('\n'),
@@ -241,9 +241,9 @@ function EditRelease({ release, adminKey, onCancel, onSaved }) {
       title: form.title,
       artist: form.artist || undefined,
       date: form.date || undefined,
-      physprice: parseFloat(form.physprice),
+      physprice: form.physprice === '' ? undefined : parseFloat(form.physprice),
       fileprice: parseFloat(form.fileprice),
-      stock: parseInt(form.stock, 10),
+      stock: form.stock === '' ? 0 : parseInt(form.stock, 10),
       notes: form.notes || undefined,
       side_a: form.side_a.split('\n').map(s => s.trim()).filter(Boolean),
       side_b: form.side_b.split('\n').map(s => s.trim()).filter(Boolean),
@@ -277,14 +277,14 @@ function EditRelease({ release, adminKey, onCancel, onSaved }) {
         <Field label="Date" hint="Short date label shown on the card">
           <input className="field-input" value={form.date} onChange={set('date')} />
         </Field>
-        <Field label="Physical price *" hint="USD, e.g. 15.00">
-          <input required type="number" min="0" step="0.01" className="field-input" value={form.physprice} onChange={set('physprice')} />
+        <Field label="Physical price" hint="USD, e.g. 15.00 — leave blank for a digital-only release">
+          <input type="number" min="0" step="0.01" className="field-input" value={form.physprice} onChange={set('physprice')} />
         </Field>
         <Field label="File price *" hint="USD, e.g. 6.00">
           <input required type="number" min="0" step="0.01" className="field-input" value={form.fileprice} onChange={set('fileprice')} />
         </Field>
-        <Field label="Stock *" hint="Number of physical copies available">
-          <input required type="number" min="0" step="1" className="field-input" value={form.stock} onChange={set('stock')} />
+        <Field label="Stock" hint="Number of physical copies available — leave blank if no physical edition">
+          <input type="number" min="0" step="1" className="field-input" value={form.stock} onChange={set('stock')} />
         </Field>
         <Field label="Side A tracks" hint="One track title per line">
           <textarea rows={4} className="field-input" value={form.side_a} onChange={set('side_a')} />
@@ -350,7 +350,7 @@ function Releases({ adminKey }) {
           <div key={release.id} className="post-row">
             <div className="post-info">
               <p className="post-title">{release.title}</p>
-              <p className="meta-text">{release.artist || '—'} · {release.date || '—'} · Stock: {release.stock}</p>
+              <p className="meta-text">{release.artist || '—'} · {release.date || '—'}{release.physprice != null ? ` · Stock: ${release.stock}` : ' · Digital only'}</p>
             </div>
             <div className="post-actions">
               <button onClick={() => setEditingId(release.id)} className="btn btn-sm">Edit</button>

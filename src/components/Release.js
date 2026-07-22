@@ -58,14 +58,16 @@ export default function MusicCard({
           </li>)}
       </ul>
 
-      <div className="release-section">
-        <p className="release-subheading">Physical Media — ${physprice} USPP</p>
-        {stock > 0 ? (
-          <BuyButton price={physprice} title={title} releaseId={id} />
-        ) : (
-          <p className="sold-out">SOLD OUT</p>
-        )}
-      </div>
+      {physprice != null && (
+        <div className="release-section">
+          <p className="release-subheading">Physical Media — ${physprice} USPP</p>
+          {stock > 0 ? (
+            <BuyButton price={physprice} title={title} releaseId={id} />
+          ) : (
+            <p className="sold-out">SOLD OUT</p>
+          )}
+        </div>
+      )}
 
       <div className="release-section">
         <p className="release-subheading">Download — ${fileprice}</p>
