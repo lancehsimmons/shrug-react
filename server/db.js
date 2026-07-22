@@ -17,7 +17,8 @@ db.exec(`
     images TEXT,
     physprice REAL,
     fileprice REAL NOT NULL,
-    stock INTEGER NOT NULL DEFAULT 0
+    stock INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'published'
   );
 
   CREATE TABLE IF NOT EXISTS posts (
@@ -52,6 +53,12 @@ db.exec(`
 
 try {
   db.exec(`ALTER TABLE posts ADD COLUMN status TEXT DEFAULT 'draft'`);
+} catch (e) {
+  // column already exists
+}
+
+try {
+  db.exec(`ALTER TABLE releases ADD COLUMN status TEXT NOT NULL DEFAULT 'published'`);
 } catch (e) {
   // column already exists
 }

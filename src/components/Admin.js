@@ -157,7 +157,7 @@ function AddRelease({ adminKey }) {
     });
     if (res.ok) {
       setForm(empty);
-      setStatus('Release added.');
+      setStatus('Release added as a draft — publish it from the Releases tab to make it live.');
     } else {
       const err = await res.json();
       setStatus(`Error: ${err.error}`);
@@ -316,17 +316,30 @@ function EditRelease({ release, adminKey, onCancel, onSaved }) {
 
 // ── Releases ──────────────────────────────────────────────────────────────────
 
-function Releases({ adminKey }) {
+function Releases({ adminKey, onAuthError }) {
   const [releases, setReleases] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [error, setError] = useState('');
 
   function load() {
-    fetch(`${API}/api/releases`)
-      .then(r => r.json())
-      .then(setReleases);
+    fetch(`${API}/api/releases/all`, { headers: { 'x-admin-key': adminKey } })
+      .then(async res => {
+        if (res.status === 401) return onAuthError();
+        if (!res.ok) return setError('Failed to load releases.');
+        setReleases(await res.json());
+      });
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [adminKey]);
+
+  async function toggle(release) {
+    const action = release.status === 'published' ? 'unpublish' : 'publish';
+    await fetch(`${API}/api/releases/${release.id}/${action}`, {
+      method: 'POST',
+      headers: { 'x-admin-key': adminKey },
+    });
+    load();
+  }
 
   const editingRelease = releases.find(r => r.id === editingId);
   if (editingRelease) {
@@ -343,7 +356,9 @@ function Releases({ adminKey }) {
   return (
     <div className="admin-section">
       <h2 className="section-heading">Releases</h2>
-      {releases.length === 0 ? (
+      {error ? (
+        <p className="status-msg error">{error}</p>
+      ) : releases.length === 0 ? (
         <p>No releases yet.</p>
       ) : (
         releases.map(release => (
@@ -351,9 +366,15 @@ function Releases({ adminKey }) {
             <div className="post-info">
               <p className="post-title">{release.title}</p>
               <p className="meta-text">{release.artist || '—'} · {release.date || '—'}{release.physprice != null ? ` · Stock: ${release.stock}` : ' · Digital only'}</p>
+              <p className={`post-status ${release.status === 'published' ? 'published' : 'draft'}`}>
+                {release.status === 'published' ? 'Published' : 'Draft'}
+              </p>
             </div>
             <div className="post-actions">
               <button onClick={() => setEditingId(release.id)} className="btn btn-sm">Edit</button>
+              <button onClick={() => toggle(release)} className="btn btn-sm">
+                {release.status === 'published' ? 'Unpublish' : 'Publish'}
+              </button>
             </div>
           </div>
         ))
@@ -585,7 +606,7 @@ export default function Admin() {
         <button onClick={logout} className="admin-logout">Log out</button>
       </div>
       {tab === 'Orders' && <Orders adminKey={adminKey} onAuthError={logout} />}
-      {tab === 'Releases' && <Releases adminKey={adminKey} />}
+      {tab === 'Releases' && <Releases adminKey={adminKey} onAuthError={logout} />}
       {tab === 'Posts' && <Posts adminKey={adminKey} onAuthError={logout} />}
       {tab === 'Add Release' && <AddRelease adminKey={adminKey} />}
       {tab === 'Add Post' && <AddPost adminKey={adminKey} />}

@@ -15,8 +15,32 @@ function parseRelease(row) {
 }
 
 router.get('/', (req, res) => {
+  const releases = db.prepare(`SELECT * FROM releases WHERE status = 'published' ORDER BY id DESC`).all().map(parseRelease);
+  res.json(releases);
+});
+
+router.get('/all', (req, res) => {
+  if (req.headers['x-admin-key'] !== process.env.ADMIN_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   const releases = db.prepare('SELECT * FROM releases ORDER BY id DESC').all().map(parseRelease);
   res.json(releases);
+});
+
+router.post('/:id/publish', (req, res) => {
+  if (req.headers['x-admin-key'] !== process.env.ADMIN_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  db.prepare(`UPDATE releases SET status = 'published' WHERE id = ?`).run(req.params.id);
+  res.json(parseRelease(db.prepare('SELECT * FROM releases WHERE id = ?').get(req.params.id)));
+});
+
+router.post('/:id/unpublish', (req, res) => {
+  if (req.headers['x-admin-key'] !== process.env.ADMIN_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  db.prepare(`UPDATE releases SET status = 'draft' WHERE id = ?`).run(req.params.id);
+  res.json(parseRelease(db.prepare('SELECT * FROM releases WHERE id = ?').get(req.params.id)));
 });
 
 router.post('/', (req, res) => {
@@ -31,8 +55,8 @@ router.post('/', (req, res) => {
   }
 
   const result = db.prepare(`
-    INSERT INTO releases (title, artist, date, time, side_a, side_b, notes, sample_urls, images, physprice, fileprice, stock)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO releases (title, artist, date, time, side_a, side_b, notes, sample_urls, images, physprice, fileprice, stock, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     title,
     artist || null,
@@ -45,7 +69,8 @@ router.post('/', (req, res) => {
     JSON.stringify(images || []),
     physprice ?? null,
     fileprice,
-    stock ?? 0
+    stock ?? 0,
+    'draft'
   );
 
   const release = db.prepare('SELECT * FROM releases WHERE id = ?').get(result.lastInsertRowid);
