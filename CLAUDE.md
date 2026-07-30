@@ -133,8 +133,12 @@ record is deliberately grey-cloud/DNS-only). Deploys: rsync changed files + `sys
 shrug-api`. Frontend is on Cloudflare Pages at `https://shrug-react.pages.dev` (production branch:
 `production` — promote via `git push origin main:production`; build env: `REACT_APP_API_URL=
 https://api.shrug.wtf`, `CI=false`). Server CORS allows shrug.wtf, www, and the pages.dev origin.
-Next: attach custom domain `shrug.wtf` (+ www) to the Pages project, then Phase 6 (PayPal sandbox
-shakedown → live flip) and Phase 7 (backups, uptime monitoring).
+Custom domain `shrug.wtf` (+ www) is attached to the Pages project and confirmed live (2026-07-30:
+both resolve to Cloudflare and serve the app). Phase 5 (DNS wiring) is complete. Next: Phase 6 (PayPal
+sandbox shakedown → live flip) — frontend PayPal client ID is now centralized in `src/config.js` as
+`PAYPAL_CLIENT_ID` (`REACT_APP_PAYPAL_CLIENT_ID` env var, sandbox ID as the dev fallback), so the live
+flip is a build-env change; still need to walk the full sandbox purchase flow on the live site before
+flipping. Then Phase 7 (backups, uptime monitoring).
 
 ## Before deployment
 

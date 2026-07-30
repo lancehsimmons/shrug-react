@@ -6,6 +6,7 @@ import Blog from './components/Blog.js';
 import Admin from './components/Admin.js';
 import BlogPreview from './components/BlogPreview.js';
 import Info from './components/Info.js';
+import { PAYPAL_CLIENT_ID } from './config.js';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
         </header>
         <Routes>
           <Route path="/" element={
-            <PayPalScriptProvider options={{ clientId: "AQZjArrSxsgLKxn-k4s3a927C2xkdsGDVDzmnicKuj-xlEdolFLqQwkjwEJ1cnvzOg28RwBM9Xkp-ZNi" }}>
+            <PayPalScriptProvider options={{ clientId: PAYPAL_CLIENT_ID }}>
               <Releaselist className="release-list" />
             </PayPalScriptProvider>
           } />
