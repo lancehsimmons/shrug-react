@@ -134,11 +134,48 @@ shrug-api`. Frontend is on Cloudflare Pages at `https://shrug-react.pages.dev` (
 `production` — promote via `git push origin main:production`; build env: `REACT_APP_API_URL=
 https://api.shrug.wtf`, `CI=false`). Server CORS allows shrug.wtf, www, and the pages.dev origin.
 Custom domain `shrug.wtf` (+ www) is attached to the Pages project and confirmed live (2026-07-30:
-both resolve to Cloudflare and serve the app). Phase 5 (DNS wiring) is complete. Next: Phase 6 (PayPal
-sandbox shakedown → live flip) — frontend PayPal client ID is now centralized in `src/config.js` as
-`PAYPAL_CLIENT_ID` (`REACT_APP_PAYPAL_CLIENT_ID` env var, sandbox ID as the dev fallback), so the live
-flip is a build-env change; still need to walk the full sandbox purchase flow on the live site before
-flipping. Then Phase 7 (backups, uptime monitoring).
+both resolve to Cloudflare and serve the app). Phase 5 (DNS wiring) is complete. The production
+`releases` table already has nullable `physprice` and the `status` column (verified directly against
+the VPS schema 2026-07-30) — the migration work described in the old "To do" section below was already
+done at some point and didn't need repeating.
+
+Phase 6 (PayPal sandbox shakedown → live flip) is in progress. Frontend PayPal client ID is centralized
+in `src/config.js` as `PAYPAL_CLIENT_ID` (`REACT_APP_PAYPAL_CLIENT_ID` env var, sandbox ID as the dev
+fallback, set in the Cloudflare Pages production env) — confirmed deployed and picked up correctly.
+Sandbox shakedown on the live site (2026-07-30): ran physical and digital purchases against a temporary
+$1/$1 test release ("test release", release id 2, created via `/admin`) using a PayPal sandbox buyer
+account. Physical capture and stock decrement worked correctly. Digital capture surfaced a real bug:
+`POST /api/releases` silently dropped the `download_url` field the Admin form was already sending
+(only `PUT` wrote it), so a freshly-created release always started with no download file configured —
+a real customer could pay and land on "Payment received but download link failed — please contact us"
+(`BuyFileBtn.js`) since `capture.js` charges before attempting to generate the signed URL and has no
+guard beforehand. Fixed by wiring `download_url` into the `POST /api/releases` insert
+(`server/routes/releases.js`); verified locally, then deployed to the VPS (rsync + `systemctl restart
+shrug-api`) and confirmed healthy 2026-07-30.
+
+The "test release" test data (id 2) has been unpublished. The live flip itself is done (2026-07-31):
+`PAYPAL_ENV=live` + live PayPal credentials are in place in `/opt/shrug/app/.env` on the VPS, and the
+frontend is rebuilt with the live client ID. Two real bugs surfaced during the flip, worth remembering:
+
+- Cloudflare Pages showed `REACT_APP_PAYPAL_CLIENT_ID` as saved under the Production environment, but
+  the deployed bundle's injected `process.env` object was still missing that key entirely (confirmed by
+  pulling the built JS from `shrug.wtf` and grepping it directly) — the build silently fell back to the
+  hardcoded sandbox default in `src/config.js`. Deleting and re-adding the variable from scratch fixed
+  it. Also worth knowing: saving an env var in the dashboard does not retrigger a build — an empty
+  commit pushed to `production` (`git commit --allow-empty` + `git push origin main:production`) is a
+  reliable way to force a fresh one.
+- `/proc/<pid>/environ` is *not* useful for checking values `dotenv` loaded — dotenv sets `process.env`
+  from inside the already-running Node process, so anything it loads never appears in `/proc/pid/environ`
+  (which only reflects the environment the parent process, i.e. systemd, passed at exec time). To verify
+  what dotenv actually resolves, run it standalone in the app directory as the service user instead:
+  `sudo -u shrug node -e "require('dotenv').config(); console.log(process.env.SOME_VAR)"`.
+
+Verified end-to-end live 2026-07-31: backend creates live orders (`approveLink` on `www.paypal.com`),
+frontend loads the live SDK, and the checkout popup resolves on `www.paypal.com` with a real PayPal
+login. Still remaining before Phase 6 is fully closed: disable the R2 bucket's public dev URL and set
+its CORS policy for `https://shrug.wtf`, then a real one-purchase smoke test + refund (no cheap test
+listing is currently published — create one via `/admin` first, since the old `$1/$1` one was
+unpublished). Then Phase 7 (backups, uptime monitoring).
 
 ## Before deployment
 
@@ -149,10 +186,7 @@ flipping. Then Phase 7 (backups, uptime monitoring).
 
 ## To do
 
-- **Support digital-only releases** (no physical edition) — dev-side is done and verified working (schema, API, `Release.js` rendering, admin forms — see Key design decisions above). Still outstanding:
-  - Migrate the **production** database on the VPS — the existing `releases` table has `NOT NULL` baked in on `physprice` and `CREATE TABLE IF NOT EXISTS` won't alter it; SQLite can't drop a NOT NULL constraint via `ALTER TABLE`, so rebuild the table: back up the `.db` file, create a new table with the relaxed schema, copy rows over, drop the old table, rename the new one into place (one-time script run on the server, then `systemctl restart shrug-api`) — this is the same rebuild already done against the local dev `store.db`. While rebuilding, also carry over the new `status` column (see below) since it needs the same production deploy.
-    - Pre-launch shortcut: while prod data is still disposable (sandbox-only orders, no real posts/edits worth keeping), skip the rebuild — stop `shrug-api`, move `store.db` aside as a backup, deploy the updated `db.js`, and restart; tables are recreated from scratch and `seed.js` re-inserts the release. Loses all orders, posts, and admin edits — not an option once PayPal is live
-- **Deploy the release draft/publish workflow to production** — dev-side is done (schema, API, admin UI — see Key design decisions above). Unlike the `physprice` change, adding `releases.status` doesn't need a table rebuild (`ALTER TABLE ... ADD COLUMN` works fine for this and defaults existing rows to `published` so nothing already live gets hidden) — it just needs the updated `db.js` and `routes/releases.js` deployed and `shrug-api` restarted. Can be done in the same deploy as the digital-only-releases migration above.
+- Complete the remaining Phase 6 steps (R2 bucket lockdown, live one-purchase smoke test + refund) and Phase 7 (backups, uptime monitoring) — see Deployment status above
 
 ## Working preferences
 
