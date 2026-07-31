@@ -48,15 +48,15 @@ router.post('/', (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { title, artist, date, time, side_a, side_b, notes, sample_urls, images, physprice, fileprice, stock } = req.body;
+  const { title, artist, date, time, side_a, side_b, notes, sample_urls, images, physprice, fileprice, stock, download_url } = req.body;
 
   if (!title || fileprice == null) {
     return res.status(400).json({ error: 'title and fileprice are required' });
   }
 
   const result = db.prepare(`
-    INSERT INTO releases (title, artist, date, time, side_a, side_b, notes, sample_urls, images, physprice, fileprice, stock, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO releases (title, artist, date, time, side_a, side_b, notes, sample_urls, images, physprice, fileprice, stock, download_url, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     title,
     artist || null,
@@ -70,6 +70,7 @@ router.post('/', (req, res) => {
     physprice ?? null,
     fileprice,
     stock ?? 0,
+    download_url || null,
     'draft'
   );
 
