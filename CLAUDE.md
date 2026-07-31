@@ -186,7 +186,8 @@ unpublished). Then Phase 7 (backups, uptime monitoring).
 
 ## To do
 
-- Complete the remaining Phase 6 steps (R2 bucket lockdown, live one-purchase smoke test + refund) and Phase 7 (backups, uptime monitoring) — see Deployment status above
+- Complete the remaining Phase 6 steps (refund the live smoke-test purchases and unpublish the test release) and Phase 7 (backups, uptime monitoring) — see Deployment status above
+- **Collect shipping address on physical orders** — `orders.js` hardcodes `shipping_preference: 'NO_SHIPPING'` on every PayPal order, so PayPal never asks the buyer for an address regardless of purchase type; discovered during the live smoke test when a physical purchase captured successfully with no shipping address. Fix: set `shipping_preference` to `'GET_FROM_FILE'` for `purchase_type === 'physical'` (keep `'NO_SHIPPING'` for digital) in the order-create call in `server/routes/orders.js`. `capture.js` already reads `order.purchase_units[0].shipping` from PayPal's response and stores it in `orders.shipping_address` — no DB or capture-side changes needed. Server-only change; deploy via rsync + `systemctl restart shrug-api`, no frontend rebuild required.
 
 ## Working preferences
 
