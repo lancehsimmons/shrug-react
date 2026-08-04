@@ -1,70 +1,117 @@
-# Getting Started with Create React App
+# Shrug Private Press
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A publishing portal and storefront for independent expermental music. Features of the site include PayPal checkout for physical and digital purchases, a blog, and an admin dashboard for managing both. Built with a React frontend and a Node/Express + SQLite backend.
 
-## Available Scripts
+**Live Site:** [shrug.wtf](https://shrug.wtf)
 
-In the project directory, you can run:
+## Screenshots
 
-### `npm start`
+<!-- Add screenshots or a short GIF here: release list, checkout flow, admin dashboard -->
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Release catalog with track listings, audio samples, and cover art
+- PayPal checkout for both physical (shipped) and digital (download) purchases
+- Digital purchases get a time-limited signed download URL generated on successful payment
+- Stock tracking for physical releases, with an oversell guard on capture
+- Blog with Markdown-style links in post bodies
+- Admin dashboard (`/admin`) for managing releases, posts, and orders, with a draft/publish workflow for both releases and posts
 
-### `npm test`
+## Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Frontend**
+- React 19
+- React Router v6
+- `@paypal/react-paypal-js`
+- CSS Modules
 
-### `npm run build`
+**Backend**
+- Node.js + Express
+- `better-sqlite3` (SQLite)
+- `@aws-sdk/client-s3` + `@aws-sdk/s3-request-presigner`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**APIs**
+- PayPal Orders v2 REST API
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Architecture
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+React (Cloudflare Pages)
+        |
+        v
+Express API (VPS, Caddy reverse proxy)
+        |
+        +--> SQLite (releases, orders, posts)
+        +--> PayPal Orders v2 API (checkout + capture)
+        +--> Cloudflare R2 (digital file storage, signed URLs)
+```
 
-### `npm run eject`
+Purchase type (`physical` or `digital`) is encoded into PayPal's `custom_id` at order creation and read back on capture, so a single capture route can decrement stock for physical orders and generate a signed R2 download link for digital orders without a second lookup.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Getting Started
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Prerequisites
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Node.js
+- A PayPal developer account (sandbox credentials)
+- A Cloudflare R2 bucket (for digital downloads)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Environment variables
 
-## Learn More
+Create `server/.env`:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+PAYPAL_CLIENT_ID=
+PAYPAL_CLIENT_SECRET=
+PAYPAL_ENV=sandbox
+ADMIN_KEY=
+R2_ACCOUNT_ID=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_BUCKET_NAME=
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Run locally
 
-### Code Splitting
+```bash
+# Terminal 1 — backend
+cd server && node index.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+# Terminal 2 — frontend
+npm start
+```
 
-### Analyzing the Bundle Size
+The backend runs on port 4000; the React dev server proxies API requests to it. The database is created and seeded automatically on first run.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## API Reference
 
-### Making a Progressive Web App
+| Method | Path | Auth | Purpose |
+|---|---|---|---|
+| GET | `/api/health` | public | Health check |
+| GET | `/api/releases` | public | Published releases only |
+| GET | `/api/releases/all` | admin | All releases, including drafts |
+| POST | `/api/releases` | admin | Create a release (draft) |
+| PUT | `/api/releases/:id` | admin | Update a release |
+| POST | `/api/releases/:id/publish` | admin | Publish a release |
+| POST | `/api/releases/:id/unpublish` | admin | Revert a release to draft |
+| GET | `/api/orders` | admin | All orders, newest first |
+| POST | `/api/orders` | public | Create a PayPal order |
+| POST | `/api/orders/:orderID/capture` | public | Capture payment, decrement stock, return signed download URL |
+| GET | `/api/posts` | public | Published posts only |
+| GET | `/api/posts/all` | admin | All posts, including drafts |
+| POST | `/api/posts` | admin | Create a post (draft) |
+| PUT | `/api/posts/:id` | admin | Update a post |
+| POST | `/api/posts/:id/publish` | admin | Publish a post |
+| POST | `/api/posts/:id/unpublish` | admin | Revert a post to draft |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Admin routes require an `x-admin-key` header.
 
-### Advanced Configuration
+## Notable design decisions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Stock only decrements on a successful payment capture — never on order creation — and only for physical purchases; digital stock is unlimited.
+- Releases and posts are created as drafts and published separately from the admin dashboard, so in-progress content never appears on the public site.
+- `download_url` stores only the R2 object key; the actual signed URL is generated server-side per request and expires after an hour, so files are never publicly linkable.
 
-### Deployment
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT
