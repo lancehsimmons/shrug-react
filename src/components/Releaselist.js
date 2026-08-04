@@ -16,6 +16,7 @@ function ReleaseList() {
           samples: r.sample_urls,
           downloadUrl: r.download_url,
           images: r.images,
+          notes: r.notes,
         })));
       });
   }, []);
@@ -36,6 +37,7 @@ function ReleaseList() {
           fileprice={release.fileprice}
           downloadUrl={release.downloadUrl}
           images={release.images}
+          notes={release.notes}
           stock={release.stock}
         />
       ))}

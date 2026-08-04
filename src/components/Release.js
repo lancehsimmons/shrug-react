@@ -14,6 +14,7 @@ export default function MusicCard({
   fileprice,
   downloadUrl,
   images,
+  notes,
   stock
 }) {
 
@@ -32,6 +33,10 @@ export default function MusicCard({
             <img key={i} className="release-image" src={url} alt="" />
           ))}
         </div>
+      )}
+
+      {notes && (
+        <p className="release-notes">{notes}</p>
       )}
 
       <div className="release-section">
