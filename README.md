@@ -48,41 +48,6 @@ Express API (VPS, Caddy reverse proxy)
 
 Purchase type (`physical` or `digital`) is encoded into PayPal's `custom_id` at order creation and read back on capture, so a single capture route can decrement stock for physical orders and generate a signed R2 download link for digital orders without a second lookup.
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js
-- A PayPal developer account (sandbox credentials)
-- A Cloudflare R2 bucket (for digital downloads)
-
-### Environment variables
-
-Create `server/.env`:
-
-```
-PAYPAL_CLIENT_ID=
-PAYPAL_CLIENT_SECRET=
-PAYPAL_ENV=sandbox
-ADMIN_KEY=
-R2_ACCOUNT_ID=
-R2_ACCESS_KEY_ID=
-R2_SECRET_ACCESS_KEY=
-R2_BUCKET_NAME=
-```
-
-### Run locally
-
-```bash
-# Terminal 1 — backend
-cd server && node index.js
-
-# Terminal 2 — frontend
-npm start
-```
-
-The backend runs on port 4000; the React dev server proxies API requests to it. The database is created and seeded automatically on first run.
-
 ## API Reference
 
 | Method | Path | Auth | Purpose |
@@ -109,9 +74,7 @@ Admin routes require an `x-admin-key` header.
 ## Notable design decisions
 
 - Stock only decrements on a successful payment capture — never on order creation — and only for physical purchases; digital stock is unlimited.
+
 - Releases and posts are created as drafts and published separately from the admin dashboard, so in-progress content never appears on the public site.
+
 - `download_url` stores only the R2 object key; the actual signed URL is generated server-side per request and expires after an hour, so files are never publicly linkable.
-
-## License
-
-MIT
