@@ -13,6 +13,7 @@ server/node_modules
 /build
 
 # misc
+CLAUDE.md
 .env
 server/.env
 *.db
