@@ -62,29 +62,6 @@ Express API (VPS, Caddy reverse proxy)
 
 Purchase type (`physical` or `digital`) is encoded into PayPal's `custom_id` at order creation and read back on capture, so a single capture route can decrement stock for physical orders and generate a signed R2 download link for digital orders without a second lookup.
 
-## API Reference
-
-| Method | Path | Auth | Purpose |
-|---|---|---|---|
-| GET | `/api/health` | public | Health check |
-| GET | `/api/releases` | public | Published releases only |
-| GET | `/api/releases/all` | admin | All releases, including drafts |
-| POST | `/api/releases` | admin | Create a release (draft) |
-| PUT | `/api/releases/:id` | admin | Update a release |
-| POST | `/api/releases/:id/publish` | admin | Publish a release |
-| POST | `/api/releases/:id/unpublish` | admin | Revert a release to draft |
-| GET | `/api/orders` | admin | All orders, newest first |
-| POST | `/api/orders` | public | Create a PayPal order |
-| POST | `/api/orders/:orderID/capture` | public | Capture payment, decrement stock, return signed download URL |
-| GET | `/api/posts` | public | Published posts only |
-| GET | `/api/posts/all` | admin | All posts, including drafts |
-| POST | `/api/posts` | admin | Create a post (draft) |
-| PUT | `/api/posts/:id` | admin | Update a post |
-| POST | `/api/posts/:id/publish` | admin | Publish a post |
-| POST | `/api/posts/:id/unpublish` | admin | Revert a post to draft |
-
-Admin routes require an `x-admin-key` header.
-
 ## Notable design decisions
 
 - Stock only decrements on a successful payment capture — never on order creation — and only for physical purchases; digital stock is unlimited.
