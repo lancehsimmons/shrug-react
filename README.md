@@ -6,15 +6,29 @@ A publishing portal and storefront for independent expermental music. Features o
 
 ## Screenshots
 
-<!-- Add screenshots or a short GIF here: release list, checkout flow, admin dashboard -->
+![Homepage](./screenshots/shrug-press.png)
+![Homepage2](./screenshots/shrug-press2.png)
+![Blog](./screenshots/shrug-blog.png)
+![Info](./screenshots/shrug-info.png)
+![Orders](./screenshots/shrug-orders.png)
+![Releases](./screenshots/shrug-releases.png)
+![Posts](./screenshots/shrug-posts.png)
+![Edit Release](./screenshots/shrug-edit-release.png)
+![Add Release](./screenshots/shrug-add-release.png)
+![Add Post](./screenshots/shrug-add-blog.png)
 
 ## Features
 
 - Release catalog with track listings, audio samples, and cover art
+
 - PayPal checkout for both physical (shipped) and digital (download) purchases
+
 - Digital purchases get a time-limited signed download URL generated on successful payment
+
 - Stock tracking for physical releases, with an oversell guard on capture
+
 - Blog with Markdown-style links in post bodies
+
 - Admin dashboard (`/admin`) for managing releases, posts, and orders, with a draft/publish workflow for both releases and posts
 
 ## Tech Stack
