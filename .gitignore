@@ -14,6 +14,8 @@ server/node_modules
 
 # misc
 CLAUDE.md
+purchase-architecture.md
+third-party-services.md
 .env
 server/.env
 *.db
