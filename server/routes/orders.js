@@ -65,7 +65,7 @@ router.post('/', async (req, res) => {
         application_context: {
           return_url: `http://localhost:${process.env.PORT || 3001}/approved`,
           cancel_url: `http://localhost:${process.env.PORT || 3001}/cancelled`,
-          shipping_preference: 'NO_SHIPPING',
+          shipping_preference: purchase_type === 'physical' ? 'GET_FROM_FILE' : 'NO_SHIPPING',
         },
       }),
     });
