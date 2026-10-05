@@ -28,6 +28,7 @@ function BuyFileButton({ price, title, releaseId }) {
             body: JSON.stringify({ releaseId, purchase_type: "digital" }),
           });
           const order = await res.json();
+          if (!res.ok) throw new Error(order.error || "Could not create order");
           return order.orderID;
         }}
         onApprove={async (data) => {

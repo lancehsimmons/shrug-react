@@ -35,8 +35,12 @@ router.post('/', async (req, res) => {
     return res.status(404).json({ error: 'Release not found' });
   }
 
-  if (release.stock <= 0) {
+  if (purchase_type === 'physical' && (release.physprice == null || release.stock <= 0)) {
     return res.status(400).json({ error: 'Sold out' });
+  }
+
+  if (purchase_type === 'digital' && !release.download_url) {
+    return res.status(400).json({ error: 'Download not available' });
   }
 
   const amount = purchase_type === 'physical' ? release.physprice : release.fileprice;

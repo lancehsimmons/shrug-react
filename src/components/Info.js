@@ -3,7 +3,7 @@ import './Info.css';
 export default function Info() {
   return (
     <div className="info-page">
-      <div className="info-intro">Shrug is a private entity providing access to independent sound forms. We will try to serve this objective as best we can. Shrug is neither a functioning business nor a unit of corporate production (though some corporate portals are utilized in achieving our objective). Please procede with discretion.</div>
+      <div className="info-intro">Shrug is a private entity providing access to independent sound forms. We will try to serve this objective as best we can. Shrug is neither a functioning business nor a unit of corporate production (though some corporate portals are utilized in achieving our objective). Please proceed with discretion.</div>
 
       <section className="info-section">
         <h2 className="info-section-title">Contact</h2>
